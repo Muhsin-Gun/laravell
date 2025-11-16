@@ -7,11 +7,17 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\CarRentalController;
 
 // =======================
 // FRONTEND ROUTES
 // =======================
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [CarRentalController::class, 'index'])->name('home');
+Route::get('/marketplace', [CarRentalController::class, 'marketplace'])->name('marketplace');
+Route::get('/cars/{id}', [CarRentalController::class, 'show'])->name('cars.show');
+Route::post('/cart/add', [CarRentalController::class, 'addToCart'])->name('cart.add');
+Route::delete('/cart/{id}', [CarRentalController::class, 'removeFromCart'])->name('cart.remove');
+Route::get('/checkout', [CarRentalController::class, 'checkout'])->name('checkout');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
