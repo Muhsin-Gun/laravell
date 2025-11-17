@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
+use App\Models\Car;
 
 class HomeController extends Controller
 {
-    public function index(): Factory|View
+    public function index()
     {
-        $name = "ist";
-        return view('frontend.home', compact('name'));
+        $cars = Car::inRandomOrder()->limit(5)->get();
+        return view('home', compact('cars'));
     }
 }
-

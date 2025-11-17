@@ -2,59 +2,81 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): View
+    public function showLoginForm()
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        return view('auth.login');
     }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function login(Request $request)
     {
-        $request->user()->fill($request->validated());
+        $credentials = $request->only('email', 'password');
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if (Auth::attempt($credentials)) {
+            return redirect()->route('dashboard.client');
         }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return redirect()->back()->withErrors('Login failed, please try again.');
     }
 
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
+    public function showRegisterForm()
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed'
         ]);
 
-        $user = $request->user();
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'client'
+        ]);
 
+        Auth::login($user);
+        return redirect()->route('dashboard.client');
+    }
+
+    public function logout()
+    {
         Auth::logout();
+        return redirect()->route('home');
+    }
 
-        $user->delete();
+    public function show()
+    {
+        $user = Auth::user();
+        return view('profile.show', compact('user'));
+    }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email'
+        ]);
 
-        return Redirect::to('/');
+        $user->update($request->only('name', 'email'));
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('public/avatars');
+            $user->avatar_path = $path;
+            $user->save();
+        }
+
+        return redirect()->back()->with('success', 'Profile updated.');
     }
 }

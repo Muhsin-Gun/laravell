@@ -3,47 +3,33 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    // Show all users
     public function index()
     {
-        $users = User::paginate(10);
-        return view('admin.users', compact('users'));
+        $users = User::all();
+        return view('admin.users.index', compact('users'));
     }
 
-    // Show edit form
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
-        return view('admin.edit', compact('user')); // ✅ sends $user to view
+        return view('admin.users.edit', compact('user'));
     }
 
-    // Handle update
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'role' => 'required|string',
-        ]);
-
-        $user->update($request->only(['name', 'email', 'role']));
-
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully!');
+        $request->validate(['role' => 'required']);
+        $user->role = $request->role;
+        $user->save();
+        return redirect()->route('users.index')->with('success', 'User updated.');
     }
 
-    // Handle delete
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
         $user->delete();
-
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully!');
+        return redirect()->route('users.index')->with('success', 'User deleted.');
     }
 }
