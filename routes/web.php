@@ -15,6 +15,7 @@ use App\Http\Controllers\EmployeeController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
 Route::get('/cars/{car}', [CarController::class, 'show'])->name('cars.show');
+Route::get('/marketplace', [CarController::class, 'index'])->name('marketplace'); // Alias for cars.index
 Route::get('/help', function() { return view('help'); })->name('help');
 
 // Auth Routes
@@ -31,9 +32,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Bookings
+    // Bookings & Checkout
     Route::post('/cars/{car}/book', [BookingController::class, 'book'])->name('cars.book');
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/checkout', [BookingController::class, 'checkout'])->name('checkout')->middleware('auth');
 
     // Payment via M-PESA
     Route::post('/payment/mpesa/initialize', [PaymentController::class, 'initialize'])->name('payment.mpesa.initialize');

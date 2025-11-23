@@ -55,65 +55,50 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 mb-20">
-                @foreach(array_slice($products, 0, 3) as $product)
+                @foreach($cars as $car)
                 <div class="bg-white/5 border border-cyan-500/20 rounded-2xl overflow-hidden hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20 transform hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                    <div class="relative h-64 bg-gradient-to-br from-slate-800 to-black flex items-center justify-center text-8xl">
-                        {{ $product['image'] }}
-                        @if($product['badge'])
-                        <div class="absolute top-4 left-4 px-3 py-1 bg-cyan-500/30 backdrop-blur-xl border border-cyan-400/60 rounded-full text-xs font-bold text-cyan-300">
-                            {{ $product['badge'] }}
-                        </div>
+                    <div class="relative h-64 bg-gradient-to-br from-slate-800 to-black flex items-center justify-center">
+                        @if($car->image)
+                            <img src="{{ asset('storage/' . $car->image) }}" alt="{{ $car->make }} {{ $car->model }}" class="h-full w-full object-cover">
+                        @else
+                            <div class="text-8xl">🚗</div>
                         @endif
-                        @if($product['discount'] > 0)
-                        <div class="absolute top-4 right-4 px-3 py-1 bg-red-500/30 backdrop-blur-xl border border-red-400/60 rounded-full text-xs font-bold text-red-300">
-                            -{{ $product['discount'] }}%
+                        @if($car->featured)
+                        <div class="absolute top-4 left-4 px-3 py-1 bg-cyan-500/30 backdrop-blur-xl border border-cyan-400/60 rounded-full text-xs font-bold text-cyan-300">
+                            Featured
                         </div>
                         @endif
                     </div>
                     <div class="p-6">
-                        <span class="text-cyan-400 text-xs font-bold uppercase tracking-wider">{{ $product['category'] }}</span>
-                        <h3 class="text-xl font-bold text-white my-2">{{ $product['name'] }}</h3>
-                        <p class="text-slate-400 text-sm mb-4">{{ $product['desc'] }}</p>
+                        <h3 class="text-xl font-bold text-white mb-2">{{ $car->year }} {{ $car->make }} {{ $car->model }}</h3>
+                        <p class="text-slate-400 text-sm mb-4">{{ $car->description ?? 'Luxury vehicle for your comfort and style' }}</p>
 
                         <div class="flex gap-4 text-xs text-slate-400 mb-4">
                             <div class="flex items-center gap-1">
                                 <span>👤</span>
-                                <span>{{ $product['specs']['seats'] }}</span>
+                                <span>{{ $car->seats ?? 4 }} Seats</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <span>⚙️</span>
-                                <span>{{ $product['specs']['transmission'] }}</span>
+                                <span>{{ $car->transmission ?? 'Automatic' }}</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <span>⚡</span>
-                                <span>{{ $product['specs']['fuel'] }}</span>
+                                <span>{{ $car->fuel_type ?? 'Petrol' }}</span>
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            @for($i = 0; $i < 5; $i++)
-                            <span class="text-yellow-400">{{ $i < floor($product['rating']) ? '★' : '☆' }}</span>
-                            @endfor
-                            <span class="text-sm text-yellow-400 font-bold">{{ $product['rating'] }}</span>
-                            <span class="text-xs text-slate-500">({{ $product['reviews'] }} reviews)</span>
+                        <div class="flex justify-between items-center">
+                            <p class="text-2xl font-black">${{ number_format($car->price_per_day, 2) }}<span class="text-sm text-slate-400">/day</span></p>
                         </div>
-
-                        <div class="flex justify-between items-center pt-4 border-t border-cyan-500/10 mb-4">
-                            <div>
-                                <p class="text-2xl font-black text-cyan-400">KES {{ number_format($product['price'] * (1 - $product['discount']/100)) }}</p>
-                                @if($product['discount'] > 0)
-                                <p class="text-xs text-slate-500 line-through">KES {{ number_format($product['price']) }}</p>
-                                @endif
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-800">
+                            <div class="flex items-center text-slate-400 text-sm">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                24/7 Availability
                             </div>
+                            <a href="{{ route('cars.show', $car->id) }}" class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">View Details →</a>
                         </div>
-
-                        <form action="{{ route('cart.add') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product['id'] }}">
-                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-cyan-500/50 to-blue-500/50 border border-cyan-400/60 rounded-lg font-bold hover:from-cyan-500/70 hover:to-blue-500/70 transform hover:scale-105 transition-all shadow-lg">
-                                Book Now
-                            </button>
-                        </form>
                     </div>
                 </div>
                 @endforeach

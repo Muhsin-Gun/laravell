@@ -36,4 +36,18 @@ class BookingController extends Controller
         $bookings = Booking::where('user_id', Auth::id())->with('car')->get();
         return view('bookings.index', compact('bookings'));
     }
+
+    public function checkout()
+    {
+        $cart = session('cart', []);
+        $carIds = array_keys($cart);
+        $cars = \App\Models\Car::whereIn('id', $carIds)->get();
+        $total = 0;
+
+        foreach ($cars as $car) {
+            $total += $car->price_per_day * $cart[$car->id]['days'];
+        }
+
+        return view('checkout', compact('cars', 'cart', 'total'));
+    }
 }
