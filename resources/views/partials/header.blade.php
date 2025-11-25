@@ -31,7 +31,16 @@
                     </form>
                 @endguest
 
-                <a href="{{ Route::has('checkout') ? route('checkout') : '#' }}" class="relative p-2 rounded-lg hover:bg-white/5 transition">
+                @php
+                    $checkoutUrl = '#';
+                    if (Route::has('checkout')) {
+                        $routeObj = Illuminate\Support\Facades\Route::getRoutes()->getByName('checkout');
+                        if ($routeObj && count($routeObj->parameterNames()) === 0) {
+                            try { $checkoutUrl = route('checkout'); } catch (\Throwable $e) { $checkoutUrl = '#'; }
+                        }
+                    }
+                @endphp
+                <a href="{{ $checkoutUrl }}" class="relative p-2 rounded-lg hover:bg-white/5 transition">
                     <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4z" />
                     </svg>
@@ -52,7 +61,7 @@
 
         <!-- Mobile menu -->
         <div id="mobile-menu" class="md:hidden hidden border-t border-cyan-500/5">
-            <div class="px-4 py-4 space-y-2">
+                <div class="px-4 py-4 space-y-2">
                 <a href="{{ Route::has('home') ? route('home') : url('/') }}" class="block text-sm text-slate-200">Home</a>
                 <a href="{{ Route::has('marketplace') ? route('marketplace') : route('cars.index') }}" class="block text-sm text-slate-200">Fleet</a>
                 <a href="#" class="block text-sm text-slate-200">Services</a>

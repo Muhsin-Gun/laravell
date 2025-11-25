@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('Admin.layout')
 
 @section('content')
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">

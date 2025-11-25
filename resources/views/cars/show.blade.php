@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('content')
 <div style="display:flex; gap: 40px; flex-wrap:wrap;">

@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('content')
 <h1 style="color: #00e5ff; margin-bottom: 30px;">Your Bookings</h1>

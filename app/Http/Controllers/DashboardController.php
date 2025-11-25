@@ -11,8 +11,24 @@ class DashboardController extends Controller
 {
     public function client()
     {
-        $bookings = Booking::where('user_id', Auth::id())->with('car')->latest()->get();
-        return view('dashboard.client', compact('bookings'));
+        $user = Auth::user();
+        
+        // Get user statistics
+        $stats = [
+            'total_orders' => $user->bookings()->count(),
+            'pending_orders' => $user->bookings()->where('status', 'pending')->count(),
+            'completed_orders' => $user->bookings()->where('status', 'completed')->count(),
+            'total_spent' => $user->bookings()->where('status', '!=', 'cancelled')->sum('total_price'),
+        ];
+        
+        // Get recent orders with car and payment information
+        $recent_orders = $user->bookings()
+            ->with(['car', 'payment'])
+            ->latest()
+            ->take(5)
+            ->get();
+            
+        return view('client.dashboard', compact('stats', 'recent_orders'));
     }
 
     public function admin()

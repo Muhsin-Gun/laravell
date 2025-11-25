@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('content')
 <div style="max-width: 600px; margin: 60px auto; background: #1e1e1e; padding: 40px; border-radius: 12px; border: 1px solid #333;">

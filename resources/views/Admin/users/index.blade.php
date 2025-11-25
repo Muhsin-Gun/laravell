@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('Admin.layout')
 
 @section('content')
 <h1 style="color: #00e5ff; margin-bottom: 30px;">Manage Users</h1>

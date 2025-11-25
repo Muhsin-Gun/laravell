@@ -17,17 +17,29 @@ class ProfileController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
+        $role = $request->input('role', 'client');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->route('dashboard.client');
+            $user = Auth::user();
+            
+            if ($user->role !== $role) {
+                Auth::logout();
+                return redirect()->back()->withErrors('You are not authorized to access this area.');
+            }
+
+            return match($user->role) {
+                'admin' => redirect()->route('dashboard.admin'),
+                'employee' => redirect()->route('employee.dashboard'),
+                default => redirect()->route('dashboard.client')
+            };
         }
 
-        return redirect()->back()->withErrors('Login failed, please try again.');
+        return redirect()->back()->withErrors('Invalid credentials. Please try again.');
     }
 
     public function showRegisterForm()
     {
-        return view('auth.register');
+        return view('auth.register', ['roles' => ['client', 'employee']]);
     }
 
     public function register(Request $request)
@@ -35,18 +47,19 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required|confirmed',
+            'role' => 'required|in:client,employee'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'client'
+            'role' => $request->role
         ]);
 
         Auth::login($user);
-        return redirect()->route('dashboard.client');
+        return redirect()->route('dashboard.' . $request->role);
     }
 
     public function logout()

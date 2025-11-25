@@ -22,6 +22,11 @@ class Kernel extends ConsoleKernel
     {
         $this->load(__DIR__.'/Commands');
 
+        // Register custom commands
+        if (class_exists(\App\Console\Commands\BrandingPreview::class)) {
+            $this->load(__DIR__.'/Commands');
+        }
+
         require base_path('routes/console.php');
     }
 }

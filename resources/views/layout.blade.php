@@ -32,7 +32,7 @@
 <body>
     <div class="navbar">
         <div>
-            <a href="{{ route('home') }}" style="font-size: 24px; font-weight: bold;">🚗 FUTURECAR</a>
+            <a href="{{ route('home') }}" style="font-size: 24px; font-weight: bold;">🚗 NEXUS Premium Cars</a>
         </div>
         <div>
             <a href="{{ route('home') }}">Home</a>
@@ -66,7 +66,7 @@
         @yield('content')
     </div>
     <footer style="background: #000; padding: 30px; text-align: center; border-top: 1px solid #333; margin-top: 60px;">
-        <p style="color: #666;">© {{ date('Y') }} FutureCar Rental. Made with ❤️ for Kenya's transportation revolution.</p>
+        <p style="color: #666;">© {{ date('Y') }} NEXUS Premium Cars. Made with ❤️ for Kenya's transportation revolution.</p>
     </footer>
 </body>
 </html>
