@@ -21,9 +21,23 @@
                 @else
                     <a href="{{ route('dashboard.client') }}" class="text-sm text-slate-200 hover:text-cyan-400">{{ auth()->user()->name }}</a>
                     @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('dashboard.admin') }}" class="text-sm text-slate-200 hover:text-cyan-400 ml-3">Admin</a>
+                        @php
+                            $adminRoute = '#';
+                            if (Route::has('dashboard.admin')) {
+                                try { $adminRoute = route('dashboard.admin'); } catch (\Throwable $e) { $adminRoute = '#'; }
+                            } elseif (Route::has('admin.dashboard')) {
+                                try { $adminRoute = route('admin.dashboard'); } catch (\Throwable $e) { $adminRoute = '#'; }
+                            }
+                        @endphp
+                        <a href="{{ $adminRoute }}" class="text-sm text-slate-200 hover:text-cyan-400 ml-3">Admin</a>
                     @elseif(auth()->user()->role === 'employee')
-                        <a href="{{ route('employee.dashboard') }}" class="text-sm text-slate-200 hover:text-cyan-400 ml-3">Employee</a>
+                        @php
+                            $employeeRoute = '#';
+                            if (Route::has('employee.dashboard')) {
+                                try { $employeeRoute = route('employee.dashboard'); } catch (\Throwable $e) { $employeeRoute = '#'; }
+                            }
+                        @endphp
+                        <a href="{{ $employeeRoute }}" class="text-sm text-slate-200 hover:text-cyan-400 ml-3">Employee</a>
                     @endif
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf

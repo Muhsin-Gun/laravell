@@ -21,14 +21,14 @@ class ProfileController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            
+
             if ($user->role !== $role) {
                 Auth::logout();
                 return redirect()->back()->withErrors('You are not authorized to access this area.');
             }
 
             return match($user->role) {
-                'admin' => redirect()->route('dashboard.admin'),
+                'admin' => redirect()->route('admin.dashboard'),
                 'employee' => redirect()->route('employee.dashboard'),
                 default => redirect()->route('dashboard.client')
             };
@@ -39,16 +39,22 @@ class ProfileController extends Controller
 
     public function showRegisterForm()
     {
-        return view('auth.register', ['roles' => ['client', 'employee']]);
+        // Expose all available roles on the registration form by default
+        $roles = ['client', 'employee', 'admin'];
+
+        return view('auth.register', ['roles' => $roles]);
     }
 
     public function register(Request $request)
     {
+        // Allow all roles on registration (client, employee, admin)
+        $allowedRoles = ['client', 'employee', 'admin'];
+
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
-            'role' => 'required|in:client,employee'
+            'role' => ['required', 'in:' . implode(',', $allowedRoles)]
         ]);
 
         $user = User::create([
@@ -59,7 +65,16 @@ class ProfileController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->route('dashboard.' . $request->role);
+
+        // Redirect to the correct dashboard route depending on role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        if ($user->role === 'employee') {
+            return redirect()->route('employee.dashboard');
+        }
+
+        return redirect()->route('dashboard.client');
     }
 
     public function logout()
