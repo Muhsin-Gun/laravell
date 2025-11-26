@@ -9,14 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
-    public function book(Request $request, Car $car)
+    public function store(Request $request, Car $car)
     {
         $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
         ]);
 
-        $days = (new \DateTime($request->end_date))->diff(new \DateTime($request->start_date))->days + 1;
+        $startDate = new \DateTime($request->start_date);
+        $endDate = new \DateTime($request->end_date);
+        $days = $endDate->diff($startDate)->days;
+        
+        if ($days < 1) {
+            $days = 1;
+        }
+        
         $total = $car->price_per_day * $days;
 
         $booking = Booking::create([
@@ -28,26 +35,45 @@ class BookingController extends Controller
             'total_price' => $total,
         ]);
 
-        return redirect()->route('payment.mpesa.initialize', ['booking' => $booking->id]);
+        return redirect()->route('checkout', $booking)->with('success', 'Booking created! Please complete payment.');
     }
 
     public function index()
     {
-        $bookings = Booking::where('user_id', Auth::id())->with('car')->get();
+        $bookings = Booking::where('user_id', Auth::id())
+            ->with('car')
+            ->latest()
+            ->paginate(10);
+            
         return view('bookings.index', compact('bookings'));
     }
 
-    public function checkout()
+    public function show(Booking $booking)
     {
-        $cart = session('cart', []);
-        $carIds = array_keys($cart);
-        $cars = \App\Models\Car::whereIn('id', $carIds)->get();
-        $total = 0;
-
-        foreach ($cars as $car) {
-            $total += $car->price_per_day * $cart[$car->id]['days'];
+        if ($booking->user_id !== Auth::id()) {
+            abort(403);
         }
+        
+        $booking->load(['car', 'payment']);
+        return view('bookings.show', compact('booking'));
+    }
 
-        return view('checkout', compact('cars', 'cart', 'total'));
+    public function employeeIndex()
+    {
+        $bookings = Booking::with(['car', 'user'])
+            ->latest()
+            ->paginate(15);
+            
+        return view('employee.bookings', compact('bookings'));
+    }
+
+    public function checkout(Booking $booking)
+    {
+        if ($booking->user_id !== Auth::id()) {
+            abort(403);
+        }
+        
+        $booking->load('car');
+        return view('checkout', compact('booking'));
     }
 }
