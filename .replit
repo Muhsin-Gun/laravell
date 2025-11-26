@@ -8,7 +8,7 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.shared]
-APP_NAME = "DayLaraApp"
+APP_NAME = "NEXUS"
 APP_ENV = "local"
 APP_DEBUG = "true"
 APP_URL = "http://0.0.0.0:5000"
