@@ -37,7 +37,6 @@ class PaymentController extends Controller
     {
         $request->validate([
             'phone_number' => 'required|regex:/^254[0-9]{9}$/',
-            'amount' => 'required|numeric|min:1',
             'booking_id' => 'required|exists:bookings,id'
         ]);
 
@@ -49,6 +48,16 @@ class PaymentController extends Controller
                 'success' => false,
                 'message' => 'Unauthorized access to booking'
             ], 403);
+        }
+
+        // Calculate amount server-side to prevent manipulation (USD to KES conversion at ~130)
+        $amount = (int) round($booking->total_price * 130);
+        
+        if ($amount < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid booking amount'
+            ], 400);
         }
 
         // Get access token
@@ -73,7 +82,7 @@ class PaymentController extends Controller
             'Password' => $password,
             'Timestamp' => $timestamp,
             'TransactionType' => 'CustomerPayBillOnline',
-            'Amount' => (int) $request->amount,
+            'Amount' => $amount,
             'PartyA' => $request->phone_number,
             'PartyB' => $this->shortcode,
             'PhoneNumber' => $request->phone_number,
@@ -90,13 +99,13 @@ class PaymentController extends Controller
             $result = $response->json();
 
             if ($response->successful() && isset($result['ResponseCode']) && $result['ResponseCode'] == '0') {
-                // Store payment record
+                // Store payment record with server-calculated amount
                 Payment::create([
                     'order_id' => $booking->id,
                     'checkout_request_id' => $result['CheckoutRequestID'],
                     'merchant_request_id' => $result['MerchantRequestID'],
                     'phone_number' => $request->phone_number,
-                    'amount' => $request->amount,
+                    'amount' => $amount,
                     'status' => 'pending',
                     'result_code' => $result['ResponseCode'],
                     'result_description' => $result['ResponseDescription']

@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CarController as AdminCarController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\EmployeeController;
 
@@ -36,6 +37,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('cars', AdminCarController::class);
     Route::resource('users', AdminUserController::class);
     Route::resource('blogs', AdminBlogController::class);
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+    Route::get('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
 });
 
 // Employee Routes

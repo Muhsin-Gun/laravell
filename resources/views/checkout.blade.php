@@ -82,7 +82,6 @@
                 <form id="mpesa-form" class="mt-6">
                     @csrf
                     <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                    <input type="hidden" name="amount" value="{{ $booking->total_price * 130 }}">
                     
                     <div class="mb-4">
                         <label class="block text-sm text-slate-400 mb-2">M-Pesa Phone Number</label>
@@ -184,7 +183,6 @@ document.getElementById('mpesa-form').addEventListener('submit', async function(
             },
             body: JSON.stringify({
                 phone_number: phone,
-                amount: {{ $booking->total_price * 130 }},
                 booking_id: {{ $booking->id }}
             })
         });
