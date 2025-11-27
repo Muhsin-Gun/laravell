@@ -50,8 +50,8 @@ class PaymentController extends Controller
             ], 403);
         }
 
-        // Calculate amount server-side to prevent manipulation (USD to KES conversion at ~130)
-        $amount = (int) round($booking->total_price * 130);
+        // Amount is already in KES - use directly
+        $amount = (int) round($booking->total_price);
         
         if ($amount < 1) {
             return response()->json([
@@ -99,7 +99,7 @@ class PaymentController extends Controller
             $result = $response->json();
 
             if ($response->successful() && isset($result['ResponseCode']) && $result['ResponseCode'] == '0') {
-                // Store payment record with server-calculated amount
+                // Store payment record
                 Payment::create([
                     'order_id' => $booking->id,
                     'checkout_request_id' => $result['CheckoutRequestID'],
@@ -188,13 +188,13 @@ class PaymentController extends Controller
                     'result_description' => $callbackData['ResultDesc']
                 ]);
 
-                // Update booking status
+                // Update booking status - auto-approve on successful payment
                 $payment->order->update([
-                    'status' => 'paid',
+                    'status' => 'approved',
                     'payment_status' => 'completed'
                 ]);
 
-                Log::info('Payment completed successfully: ' . $mpesaReceiptNumber);
+                Log::info('Payment completed successfully and booking auto-approved: ' . $mpesaReceiptNumber);
             } else {
                 // Payment failed
                 $payment->update([

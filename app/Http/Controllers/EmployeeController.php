@@ -13,18 +13,26 @@ class EmployeeController extends Controller
         $request->validate([
             'action' => 'required|in:approve,cancel,complete'
         ]);
-
-        if ($request->action === 'approve') {
-            $booking->status = 'approved';
-        } elseif ($request->action === 'cancel') {
-            $booking->status = 'cancelled';
-        } elseif ($request->action === 'complete') {
-            $booking->status = 'completed';
+        
+        $action = $request->input('action');
+        
+        switch ($action) {
+            case 'cancel':
+                $booking->status = 'cancelled';
+                $message = 'Booking cancelled successfully!';
+                break;
+            case 'complete':
+                $booking->status = 'completed';
+                $message = 'Booking marked as completed!';
+                break;
+            case 'approve':
+                $booking->status = 'approved';
+                $message = 'Booking approved successfully!';
+                break;
         }
-
+        
         $booking->save();
 
-        // Create notification for user
         DB::table('notifications')->insert([
             'user_id' => $booking->user_id,
             'type' => 'booking.status',
@@ -37,6 +45,26 @@ class EmployeeController extends Controller
             'updated_at' => now()
         ]);
 
-        return back()->with('success', 'Booking ' . $booking->status . ' successfully!');
+        return back()->with('success', $message);
+    }
+
+    public function reject(Request $request, Booking $booking)
+    {
+        $booking->status = 'rejected';
+        $booking->save();
+
+        DB::table('notifications')->insert([
+            'user_id' => $booking->user_id,
+            'type' => 'booking.status',
+            'data' => json_encode([
+                'booking_id' => $booking->id,
+                'status' => $booking->status
+            ]),
+            'read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return back()->with('success', 'Booking rejected successfully!');
     }
 }

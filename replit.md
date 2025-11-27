@@ -82,6 +82,12 @@ MPESA_ENV=sandbox
 - `/checkout/{booking}` - Payment checkout page
 
 ## Recent Changes
+- Nov 27, 2025: Fixed EmployeeController with proper action validation for approve/cancel/complete flows + separate reject method
+- Nov 27, 2025: Updated currency from USD to KES (Kenya Shillings) with small test amounts (Ksh 45-75)
+- Nov 27, 2025: Fixed 403 login issues with proper session regeneration on login/logout
+- Nov 27, 2025: M-Pesa auto-approval - bookings automatically approved after successful STK Push payment callback
+- Nov 27, 2025: Created Admin/cars views (index.blade.php, create.blade.php, edit.blade.php) with proper layout
+- Nov 27, 2025: Added CSRF exception for M-Pesa callback route (/api/payments/callback)
 - Nov 27, 2025: **CRITICAL FIX** - Removed conflicting route files (car-rental.php, web_car_rental.php) and CarRentalController that were showing placeholder data instead of real cars
 - Nov 27, 2025: Set up PostgreSQL database on Replit and ran migrations/seeders
 - Nov 27, 2025: Copied car images to storage/app/public/cars/ and created storage symlink

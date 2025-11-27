@@ -1,4 +1,4 @@
-modules = ["php-8.2", "web", "nodejs-20"]
+modules = ["php-8.2", "web", "nodejs-20", "postgresql-16"]
 [agent]
 expertMode = true
 
@@ -24,6 +24,9 @@ SESSION_LIFETIME = "120"
 APP_KEY = "base64:ZO5fuue6yVMw9oc+4tw5VwwNq8ViVDeRY3Jcm8qjrkQ="
 MPESA_SHORTCODE = "174379"
 MPESA_ENV = "sandbox"
+MPESA_CONSUMER_KEY = "tqRnGX8FUN1qHYyIoC4VBpH7AOl855kTltvtUARby0tKKwe1"
+MPESA_CONSUMER_SECRET = "nkesbMKa7USM0GVUBSqjDd0SO2mCv5Gp4XyGAzFnzSjfL9acJjGCNIouBkfUn8tv"
+MPESA_PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
 
 [workflows]
 runButton = "Project"
@@ -68,3 +71,7 @@ externalPort = 3002
 [[ports]]
 localPort = 45641
 externalPort = 3003
+
+[[ports]]
+localPort = 45855
+externalPort = 4200

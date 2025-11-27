@@ -25,7 +25,7 @@
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-white">{{ $booking->car->name ?? 'Vehicle' }}</h3>
                         <p class="text-sm text-slate-400">{{ $booking->car->brand ?? '' }} • {{ $booking->car->type ?? '' }}</p>
-                        <p class="text-cyan-400 font-bold mt-2">${{ number_format($booking->car->price_per_day ?? 0, 2) }} / day</p>
+                        <p class="text-cyan-400 font-bold mt-2">KES {{ number_format($booking->car->price_per_day ?? 0, 0) }} / day</p>
                     </div>
                 </div>
                 
@@ -51,9 +51,8 @@
                 <div class="pt-4 border-t border-slate-700">
                     <div class="flex justify-between text-lg font-bold">
                         <span class="text-white">Total Amount</span>
-                        <span class="text-green-400">KES {{ number_format($booking->total_price * 130, 0) }}</span>
+                        <span class="text-green-400">KES {{ number_format($booking->total_price, 0) }}</span>
                     </div>
-                    <p class="text-xs text-slate-500 mt-1">(~${{ number_format($booking->total_price, 2) }} USD)</p>
                 </div>
             </div>
 
@@ -102,7 +101,7 @@
                     <button type="submit" 
                             id="pay-btn"
                             class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl font-bold text-lg hover:scale-[1.02] transform transition shadow-lg">
-                        Pay KES {{ number_format($booking->total_price * 130, 0) }} via M-Pesa
+                        Pay KES {{ number_format($booking->total_price, 0) }} via M-Pesa
                     </button>
                 </form>
                 
@@ -208,14 +207,14 @@ document.getElementById('mpesa-form').addEventListener('submit', async function(
             statusDiv.classList.add('bg-red-500/20', 'text-red-400');
             statusDiv.innerHTML = data.message || 'Payment initialization failed';
             btn.disabled = false;
-            btn.innerHTML = 'Pay KES {{ number_format($booking->total_price * 130, 0) }} via M-Pesa';
+            btn.innerHTML = 'Pay KES {{ number_format($booking->total_price, 0) }} via M-Pesa';
         }
     } catch (error) {
         statusDiv.classList.remove('hidden', 'bg-green-500/20', 'text-green-400');
         statusDiv.classList.add('bg-red-500/20', 'text-red-400');
         statusDiv.innerHTML = 'An error occurred. Please try again.';
         btn.disabled = false;
-        btn.innerHTML = 'Pay KES {{ number_format($booking->total_price * 130, 0) }} via M-Pesa';
+        btn.innerHTML = 'Pay KES {{ number_format($booking->total_price, 0) }} via M-Pesa';
     }
 });
 </script>
