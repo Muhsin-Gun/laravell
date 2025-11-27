@@ -15,7 +15,7 @@
             <th>Type</th>
             <th>Price/Day</th>
             <th>Available</th>
-            <th>Actions</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
