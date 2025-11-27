@@ -14,7 +14,7 @@ Your React car rental app has been successfully converted to **pure Laravel with
 
 2. **Routes**: `routes/web.php` (updated)
    - Home page: `/`
-   - Fleet/Marketplace: `/marketplace`
+   - Fleet/Marketplace: `/marketplace` gyg
    - Car details: `/cars/{id}`
    - Add to cart: `POST /cart/add`
    - Remove from cart: `DELETE /cart/{id}`
