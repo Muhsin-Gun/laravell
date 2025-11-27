@@ -81,6 +81,14 @@ MPESA_ENV=sandbox
 - `/checkout/{booking}` - Payment checkout page
 
 ## Recent Changes
+- Nov 27, 2025: Fixed admin dashboard route errors (cars.create -> admin.cars.create, users.edit -> admin.users.edit)
+- Nov 27, 2025: Fixed view paths in controllers to use capital "Admin" matching directory structure
+- Nov 27, 2025: Updated navbar - removed car icon, kept NEXUS branding only, centered menu with services dropdown
+- Nov 27, 2025: Added comprehensive services section to homepage (Car Rentals, Airport Transfers, Corporate Fleet, Chauffeur Services)
+- Nov 27, 2025: Added 6 customer reviews with gradient avatar circles to homepage
+- Nov 27, 2025: Redesigned login and register pages with dark theme (cyan/blue gradients, modern styling)
+- Nov 27, 2025: Improved footer with 5 columns, contact info, social links, and payment methods
+- Nov 27, 2025: Fixed client dashboard layout by adding help/support section
 - Nov 26, 2025: Fixed database configuration to use Replit PostgreSQL
 - Nov 26, 2025: Updated car detail page with improved booking form
 - Nov 26, 2025: Created checkout page with M-Pesa STK Push integration
@@ -91,3 +99,5 @@ MPESA_ENV=sandbox
 - Server runs on port 5000
 - Storage link created for car images: `php artisan storage:link`
 - Run migrations: `php artisan migrate:fresh --seed`
+- View paths use capital "A" (Admin) to match directory structure for case-sensitive systems
+- SQLite has been removed, PostgreSQL is now the primary database

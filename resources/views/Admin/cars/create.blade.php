@@ -5,7 +5,7 @@
     <h1 style="color: #00e5ff; margin-bottom: 30px;">Add New Car</h1>
 
     <div style="background: #1e1e1e; padding: 40px; border-radius: 12px; border: 1px solid #333;">
-        <form method="POST" action="{{ route('cars.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.cars.store') }}" enctype="multipart/form-data">
             @csrf
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <label style="display: block;">

@@ -11,12 +11,12 @@ class CarController extends Controller
     public function index()
     {
         $cars = Car::all();
-        return view('admin.cars.index', compact('cars'));
+        return view('Admin.cars.index', compact('cars'));
     }
 
     public function create()
     {
-        return view('admin.cars.create');
+        return view('Admin.cars.create');
     }
 
     public function store(Request $request)
@@ -29,7 +29,7 @@ class CarController extends Controller
             'image' => 'required|image'
         ]);
 
-        $path = $request->file('image')->store('public/cars');
+        $path = $request->file('image')->store('cars', 'public');
 
         Car::create([
             'name' => $request->name,
@@ -41,12 +41,12 @@ class CarController extends Controller
             'available' => true,
         ]);
 
-        return redirect()->route('cars.index')->with('success', 'Car created successfully.');
+        return redirect()->route('admin.cars.index')->with('success', 'Car created successfully.');
     }
 
     public function edit(Car $car)
     {
-        return view('admin.cars.edit', compact('car'));
+        return view('Admin.cars.edit', compact('car'));
     }
 
     public function update(Request $request, Car $car)
@@ -58,20 +58,22 @@ class CarController extends Controller
             'price_per_day' => 'required|numeric'
         ]);
 
-        $car->update($request->only('name', 'brand', 'type', 'description', 'price_per_day', 'available'));
+        $data = $request->only('name', 'brand', 'type', 'description', 'price_per_day');
+        $data['available'] = $request->has('available');
+        $car->update($data);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/cars');
+            $path = $request->file('image')->store('cars', 'public');
             $car->image_path = $path;
             $car->save();
         }
 
-        return redirect()->route('cars.index')->with('success', 'Car updated successfully.');
+        return redirect()->route('admin.cars.index')->with('success', 'Car updated successfully.');
     }
 
     public function destroy(Car $car)
     {
         $car->delete();
-        return redirect()->route('cars.index')->with('success', 'Car deleted.');
+        return redirect()->route('admin.cars.index')->with('success', 'Car deleted.');
     }
 }

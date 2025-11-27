@@ -166,5 +166,17 @@
             </div>
         </a>
     </div>
+
+    <div class="mt-12 p-8 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-cyan-500/10 rounded-2xl">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <h3 class="text-xl font-bold text-white mb-2">Need Help?</h3>
+                <p class="text-slate-400">Our support team is available 24/7 to assist you with any questions.</p>
+            </div>
+            <a href="{{ route('help') }}" class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl font-bold hover:scale-105 transition whitespace-nowrap">
+                Contact Support
+            </a>
+        </div>
+    </div>
 </div>
 @endsection

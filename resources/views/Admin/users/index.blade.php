@@ -29,9 +29,9 @@
             </td>
             <td>{{ $user->loyalty_points }}</td>
             <td>
-                <a href="{{ route('users.edit', $user) }}" style="color: #00e5ff; margin-right: 10px;">Edit</a>
+                <a href="{{ route('admin.users.edit', $user) }}" style="color: #00e5ff; margin-right: 10px;">Edit</a>
                 @if($user->id !== Auth::id())
-                <form method="POST" action="{{ route('users.destroy', $user) }}" style="display:inline;">
+                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display:inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" style="background: none; border: none; color: #ff0055; cursor: pointer;" onclick="return confirm('Are you sure?')">Delete</button>
