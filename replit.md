@@ -82,6 +82,9 @@ MPESA_ENV=sandbox
 - `/checkout/{booking}` - Payment checkout page
 
 ## Recent Changes
+- Nov 27, 2025: **CRITICAL FIX** - Removed conflicting route files (car-rental.php, web_car_rental.php) and CarRentalController that were showing placeholder data instead of real cars
+- Nov 27, 2025: Set up PostgreSQL database on Replit and ran migrations/seeders
+- Nov 27, 2025: Copied car images to storage/app/public/cars/ and created storage symlink
 - Nov 27, 2025: Added admin reports page with revenue analytics, top rented cars, and CSV export
 - Nov 27, 2025: Fixed security issue - payment amount now calculated server-side to prevent manipulation
 - Nov 27, 2025: Updated fleet to 7 featured luxury vehicles with high-quality images
