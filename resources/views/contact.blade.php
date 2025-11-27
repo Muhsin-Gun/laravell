@@ -63,7 +63,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m0 0l4-4m-4 4l4 4m4-4H8"/>
           </svg>
-          <span class="text-gray-700">info@mybrand.com</span>
+          <span class="text-gray-700">muhsinabdi288@gmail.com</span>
         </div>
 
         <div class="flex items-center justify-center md:justify-start space-x-3">
@@ -71,7 +71,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h2l2 5l-2 2l5 5l2-2l5 2v2a1 1 0 01-1 1h-2a10 10 0 01-10-10V6a1 1 0 011-1z"/>
           </svg>
-          <span class="text-gray-700">+254 796 739 051</span>
+          <span class="text-gray-700">+254 793 027 220</span>
         </div>
 
         <div class="flex items-center justify-center md:justify-start space-x-3">

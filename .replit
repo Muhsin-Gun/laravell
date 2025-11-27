@@ -14,7 +14,7 @@ APP_DEBUG = "true"
 APP_URL = "http://localhost:5000"
 LOG_CHANNEL = "stack"
 LOG_LEVEL = "debug"
-DB_CONNECTION = "pgsql"
+DB_CONNECTION = "sqlite"
 DB_DATABASE = "database/database.sqlite"
 BROADCAST_DRIVER = "log"
 CACHE_DRIVER = "file"
@@ -23,6 +23,8 @@ QUEUE_CONNECTION = "sync"
 SESSION_DRIVER = "file"
 SESSION_LIFETIME = "120"
 APP_KEY = "base64:ZO5fuue6yVMw9oc+4tw5VwwNq8ViVDeRY3Jcm8qjrkQ="
+MPESA_SHORTCODE = "174379"
+MPESA_ENV = "sandbox"
 
 [workflows]
 runButton = "Project"
@@ -59,3 +61,7 @@ externalPort = 3001
 [[ports]]
 localPort = 45543
 externalPort = 3000
+
+[[ports]]
+localPort = 45579
+externalPort = 3002

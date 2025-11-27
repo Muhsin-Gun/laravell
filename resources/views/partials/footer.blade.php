@@ -62,7 +62,7 @@
                 </div>
                 <div>
                     <p class="text-xs text-slate-400">24/7 Support</p>
-                    <p class="font-semibold text-white">+254 700 000 000</p>
+                    <p class="font-semibold text-white">+254 793 027 220</p>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -73,7 +73,7 @@
                 </div>
                 <div>
                     <p class="text-xs text-slate-400">Email Us</p>
-                    <p class="font-semibold text-white">info@nexus.co.ke</p>
+                    <p class="font-semibold text-white">muhsinabdi288@gmail.com</p>
                 </div>
             </div>
             <div class="flex items-center gap-4">

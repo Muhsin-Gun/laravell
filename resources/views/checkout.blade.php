@@ -124,7 +124,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-white font-medium">Call Us</p>
-                            <p class="text-xs text-slate-400">+254 700 123 456</p>
+                            <p class="text-xs text-slate-400">+254 793 027 220</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
@@ -135,7 +135,7 @@
                         </div>
                         <div>
                             <p class="text-sm text-white font-medium">Email</p>
-                            <p class="text-xs text-slate-400">support@nexus.co.ke</p>
+                            <p class="text-xs text-slate-400">muhsinabdi288@gmail.com</p>
                         </div>
                     </div>
                 </div>
