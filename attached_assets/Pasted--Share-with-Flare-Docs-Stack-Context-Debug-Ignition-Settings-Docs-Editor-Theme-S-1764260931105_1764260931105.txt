@@ -1,0 +1,385 @@
+
+
+Share with Flare
+Docs
+
+    Stack
+    Context
+    Debug
+
+Ignition Settings
+Docs
+Editor
+Theme
+
+    Settings will be saved locally in ~/.ignition.json.
+
+View [Admin.cars.index] not found.
+InvalidArgumentException
+PHP 8.2.12
+10.49.1
+View [Admin.cars.index] not found.
+Admin.cars.index was not found.
+
+Are you sure the view exists and is a .blade.php file?
+
+    4 vendor frames
+
+    App \ Http \ Controllers \ Admin \ CarController : 14
+    index
+    Illuminate \ Routing \ Controller : 54
+    callAction
+    Illuminate \ Routing \ ControllerDispatcher : 43
+    dispatch
+    Illuminate \ Routing \ Route : 259
+    runController
+    Illuminate \ Routing \ Route : 205
+    run
+    Illuminate \ Routing \ Router : 806
+    Illuminate\Routing\{closure}
+    Illuminate \ Pipeline \ Pipeline : 144
+    Illuminate\Pipeline\{closure}
+    App \ Http \ Middleware \ EnsureRole : 21
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Routing \ Middleware \ SubstituteBindings : 50
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Auth \ Middleware \ Authenticate : 57
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Foundation \ Http \ Middleware \ VerifyCsrfToken : 78
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ View \ Middleware \ ShareErrorsFromSession : 49
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Session \ Middleware \ StartSession : 121
+    handleStatefulRequest
+    Illuminate \ Session \ Middleware \ StartSession : 64
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Cookie \ Middleware \ AddQueuedCookiesToResponse : 37
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Cookie \ Middleware \ EncryptCookies : 67
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Pipeline \ Pipeline : 119
+    then
+    Illuminate \ Routing \ Router : 805
+    runRouteWithinStack
+    Illuminate \ Routing \ Router : 784
+    runRoute
+    Illuminate \ Routing \ Router : 748
+    dispatchToRoute
+    Illuminate \ Routing \ Router : 737
+    dispatch
+    Illuminate \ Foundation \ Http \ Kernel : 200
+    Illuminate\Foundation\Http\{closure}
+    Illuminate \ Pipeline \ Pipeline : 144
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Foundation \ Http \ Middleware \ TransformsRequest : 21
+    handle
+    Illuminate \ Foundation \ Http \ Middleware \ ConvertEmptyStringsToNull : 31
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Foundation \ Http \ Middleware \ TransformsRequest : 21
+    handle
+    Illuminate \ Foundation \ Http \ Middleware \ TrimStrings : 40
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Foundation \ Http \ Middleware \ ValidatePostSize : 27
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Foundation \ Http \ Middleware \ PreventRequestsDuringMaintenance : 99
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Http \ Middleware \ HandleCors : 49
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Http \ Middleware \ TrustProxies : 39
+    handle
+    Illuminate \ Pipeline \ Pipeline : 183
+    Illuminate\Pipeline\{closure}
+    Illuminate \ Pipeline \ Pipeline : 119
+    then
+    Illuminate \ Foundation \ Http \ Kernel : 175
+    sendRequestThroughRouter
+    Illuminate \ Foundation \ Http \ Kernel : 144
+    handle
+    C:\Users\amadn\Downloads\Laravel-dayLaraApp-main 2\Laravel-dayLaraApp-main\public\index.php : 51
+    require_once
+    C:\Users\amadn\Downloads\Laravel-dayLaraApp-main 2\Laravel-dayLaraApp-main\vendor\laravel\framework\src\Illuminate\Foundation\resources\server.php : 16
+    [top]
+
+C:\Users\amadn\Downloads\Laravel-dayLaraApp-main 2\Laravel-dayLaraApp-main\app\Http\Controllers\Admin\CarController.php : 14
+
+<?php
+
+
+namespace App\Http\Controllers\Admin;
+
+
+use App\Http\Controllers\Controller;
+
+use App\Models\Car;
+
+use Illuminate\Http\Request;
+
+
+class CarController extends Controller
+
+{
+
+    public function index()
+
+    {
+
+        $cars = Car::all();
+
+        return view('Admin.cars.index', compact('cars'));
+
+    }
+
+
+    public function create()
+
+    {
+
+        return view('Admin.cars.create');
+
+    }
+
+
+    public function store(Request $request)
+
+    {
+
+        $request->validate([
+
+            'name' => 'required',
+
+            'brand' => 'required',
+
+            'type' => 'required',
+
+            'price_per_day' => 'required|numeric',
+
+            'image' => 'required|image'
+
+        ]);
+
+arguments
+
+$view:string
+
+    "Admin.cars.index"
+
+$data:array
+
+    {
+        "cars": "object (Illuminate\\Database\\Eloquent\\Collection)"
+    }
+
+$mergeData:array
+
+    []
+
+    App
+
+    Routing
+
+Request
+
+Browser
+Headers
+
+    Body
+
+Context
+
+User
+
+        Versions
+
+App
+Routing
+Controller
+
+    App\Http\Controllers\Admin\CarController@index
+
+Route name
+
+    admin.cars.index
+
+Middleware
+
+        web
+
+auth
+
+role:admin
+
+Request
+http://127.0.0.1:8000/admin/cars
+GET
+
+curl "http://127.0.0.1:8000/admin/cars" \
+   -X GET \
+   -H 'host: 127.0.0.1:8000' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' \
+   -H 'accept-language: en-US,en;q=0.5' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'connection: keep-alive' \
+   -H 'referer: http://127.0.0.1:8000/admin/dashboard' \
+   -H 'cookie: <CENSORED>' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'sec-fetch-dest: document' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'priority: u=0, i';
+
+Browser
+
+Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0
+
+Headers
+host
+
+    127.0.0.1:8000
+
+user-agent
+
+    Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0
+
+accept
+
+    text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+
+accept-language
+
+    en-US,en;q=0.5
+
+accept-encoding
+
+    gzip, deflate, br, zstd
+
+connection
+
+    keep-alive
+
+referer
+
+    http://127.0.0.1:8000/admin/dashboard
+
+cookie
+
+    <CENSORED>
+
+upgrade-insecure-requests
+
+    1
+
+sec-fetch-dest
+
+    document
+
+sec-fetch-mode
+
+    navigate
+
+sec-fetch-site
+
+    same-origin
+
+sec-fetch-user
+
+    ?1
+
+priority
+
+    u=0, i
+
+Body
+
+[]
+
+Context
+User
+muhsin@gmail.com
+
+muhsin
+
+muhsin@gmail.com
+
+{
+    "id": 3,
+    "name": "muhsin",
+    "email": "muhsin@gmail.com",
+    "role": "admin",
+    "email_verified_at": null,
+    "avatar_path": null,
+    "loyalty_points": 0,
+    "created_at": "2025-11-26T10:01:18.000000Z",
+    "updated_at": "2025-11-26T10:01:18.000000Z"
+}
+
+Versions
+Php Version
+
+    8.2.12
+
+Laravel Version
+
+    10.49.1
+
+Laravel Locale
+
+    en
+
+Laravel Config Cached
+    false
+App Debug
+    true
+App Env
+
+    local
+
+7:28:06 PM
+3.9ms
+mysql
+
+select * from `users` where `id` = 3 limit 1
+
+7:28:06 PM
+0.43ms
+mysql
+
+select * from `cars`
+
+    ·
+    Source
+    ·
+    Docs
+    ·
+    Laravel
+
+Ignition is built by
+
+Flare, the Laravel error reporting service.
