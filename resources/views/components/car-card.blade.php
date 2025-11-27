@@ -1,4 +1,4 @@
-@props(['car'])
+<!-- @props(['car'])
 <div {{ $attributes->merge(['class' => 'bg-white/5 border border-cyan-500/20 rounded-xl overflow-hidden hover:border-cyan-500/50 hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300']) }}>
     <div class="relative h-48 bg-gradient-to-br from-slate-800 to-black flex items-center justify-center text-6xl">
         @if($car->image_path)
@@ -26,4 +26,4 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->
