@@ -1,113 +1,45 @@
-@extends('layouts.dashboard')
-
-@section('title', 'Manage Users')
-@section('role-badge', 'Admin')
-@section('page-title', 'Manage Users')
-
-@section('sidebar-menu')
-    <a href="{{ route('admin.dashboard') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
-        </svg>
-        Dashboard
-    </a>
-
-    <a href="{{ route('admin.cars.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-        </svg>
-        Manage Cars
-    </a>
-
-    <a href="{{ route('admin.users.index') }}" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 bg-cyan-500/10">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        Manage Users
-    </a>
-
-    <a href="{{ route('admin.blogs.index') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-        </svg>
-        Manage Blogs
-    </a>
-
-    <a href="{{ route('admin.reports') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-        </svg>
-        Reports
-    </a>
-@endsection
+@extends('Admin.layout')
 
 @section('content')
-    <div class="flex justify-between items-center mb-8">
-        <h2 class="text-2xl font-bold text-white">All Users</h2>
-    </div>
+<h1 style="color: #00e5ff; margin-bottom: 30px;">Manage Users</h1>
 
-    @if(session('success'))
-        <div class="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-xl text-green-400">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden">
-        <table class="w-full">
-            <thead class="bg-slate-900/50">
-                <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Role</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Loyalty Points</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-700">
-                @forelse($users as $user)
-                    <tr class="hover:bg-slate-700/30 transition">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white font-bold">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
-                                </div>
-                                <span class="font-medium text-white">{{ $user->name }}</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-300">{{ $user->email }}</td>
-                        <td class="px-6 py-4">
-                            @if($user->role == 'admin')
-                                <span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-medium">Admin</span>
-                            @elseif($user->role == 'employee')
-                                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-medium">Employee</span>
-                            @else
-                                <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-xs font-medium">Client</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 text-cyan-400 font-semibold">{{ $user->loyalty_points }}</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <a href="{{ route('admin.users.edit', $user) }}" class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition text-sm">Edit</a>
-                                @if($user->id !== Auth::id())
-                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition text-sm">Delete</button>
-                                    </form>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-12 text-center">
-                            <div class="text-6xl mb-4">👥</div>
-                            <h3 class="text-lg font-medium text-gray-300 mb-2">No users found</h3>
-                            <p class="text-gray-500">Users will appear here once they register.</p>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Loyalty Points</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($users as $user)
+        <tr>
+            <td>{{ $user->name }}</td>
+            <td>{{ $user->email }}</td>
+            <td>
+                <span style="padding: 5px 10px; border-radius: 4px;
+                    @if($user->role == 'admin') background: rgba(255,0,85,0.2); color: #ff0055;
+                    @elseif($user->role == 'employee') background: rgba(255,215,0,0.2); color: #ffd700;
+                    @else background: rgba(0,229,255,0.2); color: #00e5ff;
+                    @endif">
+                    {{ ucfirst($user->role) }}
+                </span>
+            </td>
+            <td>{{ $user->loyalty_points }}</td>
+            <td>
+                <a href="{{ route('admin.users.edit', $user) }}" style="color: #00e5ff; margin-right: 10px;">Edit</a>
+                @if($user->id !== Auth::id())
+                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="background: none; border: none; color: #ff0055; cursor: pointer;" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+                @endif
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
 @endsection

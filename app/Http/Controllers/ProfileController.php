@@ -20,15 +20,10 @@ class ProfileController extends Controller
         $role = $request->input('role', 'client');
 
         if (Auth::attempt($credentials)) {
-            // Regenerate session to prevent session fixation
-            $request->session()->regenerate();
-            
             $user = Auth::user();
 
             if ($user->role !== $role) {
                 Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
                 return redirect()->back()->withErrors('You are not authorized to access this area.');
             }
 
@@ -82,11 +77,9 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.client');
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
         return redirect()->route('home');
     }
 

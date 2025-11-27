@@ -138,7 +138,7 @@
                     <p class="text-slate-500 text-sm mb-4 line-clamp-2">{{ Str::limit($car->description, 80) }}</p>
 
                     <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-800">
-                        <p class="text-2xl font-black">KES {{ number_format($car->price_per_day, 0) }}<span class="text-sm text-slate-400">/day</span></p>
+                        <p class="text-2xl font-black">${{ number_format($car->price_per_day, 0) }}<span class="text-sm text-slate-400">/day</span></p>
                         <a href="{{ route('cars.show', $car->id) }}" class="px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-lg hover:bg-cyan-500/30 transition text-sm font-medium">View Details</a>
                     </div>
                 </div>
@@ -158,7 +158,7 @@
                     <p class="text-slate-400 text-sm mb-1">Luxury Brand • Sedan</p>
                     <p class="text-slate-500 text-sm mb-4">Experience luxury and comfort with our premium vehicle selection.</p>
                     <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-800">
-                        <p class="text-2xl font-black">KES {{ rand(500, 2000) }}<span class="text-sm text-slate-400">/day</span></p>
+                        <p class="text-2xl font-black">${{ rand(150, 350) }}<span class="text-sm text-slate-400">/day</span></p>
                         <a href="{{ route('cars.index') }}" class="px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-lg hover:bg-cyan-500/30 transition text-sm font-medium">View Details</a>
                     </div>
                 </div>

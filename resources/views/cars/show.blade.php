@@ -71,7 +71,7 @@
             </div>
 
             <div class="flex items-baseline gap-2 mb-6">
-                <span class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">KES {{ number_format($car->price_per_day, 0) }}</span>
+                <span class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">${{ number_format($car->price_per_day, 0) }}</span>
                 <span class="text-slate-400 text-lg">/ day</span>
             </div>
 
@@ -110,7 +110,7 @@
                                 <div class="pt-4 border-t border-slate-700">
                                     <div class="flex justify-between mb-2">
                                         <span class="text-slate-400">Daily Rate</span>
-                                        <span class="text-white">KES {{ number_format($car->price_per_day, 0) }}</span>
+                                        <span class="text-white">${{ number_format($car->price_per_day, 2) }}</span>
                                     </div>
                                     <div class="flex justify-between mb-2" id="daysRow" style="display: none;">
                                         <span class="text-slate-400">Number of Days</span>
@@ -118,7 +118,7 @@
                                     </div>
                                     <div class="flex justify-between text-lg font-bold pt-2 border-t border-slate-700" id="totalRow" style="display: none;">
                                         <span class="text-white">Estimated Total</span>
-                                        <span class="text-green-400" id="totalPrice">KES 0</span>
+                                        <span class="text-green-400" id="totalPrice">$0</span>
                                     </div>
                                 </div>
 
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 daysRow.style.display = 'flex';
                 totalRow.style.display = 'flex';
                 numDays.textContent = days + ' day' + (days > 1 ? 's' : '');
-                totalPrice.textContent = 'KES ' + (days * pricePerDay).toLocaleString('en-US', {minimumFractionDigits: 0});
+                totalPrice.textContent = '$' + (days * pricePerDay).toLocaleString('en-US', {minimumFractionDigits: 2});
             }
         }
     }

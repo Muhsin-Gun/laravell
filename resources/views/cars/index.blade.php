@@ -30,11 +30,11 @@
                 <label style="display: block; margin-bottom: 8px; color: #999; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Max Price/Day</label>
                 <select name="price_max" style="width: 100%; padding: 12px; background: #0b0b0b; border: 1px solid #333; color: #fff; border-radius: 8px;">
                     <option value="">Any Price</option>
-                    <option value="500" {{ request('price_max') == '500' ? 'selected' : '' }}>Under KES 500</option>
-                    <option value="1000" {{ request('price_max') == '1000' ? 'selected' : '' }}>Under KES 1,000</option>
-                    <option value="2000" {{ request('price_max') == '2000' ? 'selected' : '' }}>Under KES 2,000</option>
-                    <option value="5000" {{ request('price_max') == '5000' ? 'selected' : '' }}>Under KES 5,000</option>
-                    <option value="10000" {{ request('price_max') == '10000' ? 'selected' : '' }}>Under KES 10,000</option>
+                    <option value="50" {{ request('price_max') == '50' ? 'selected' : '' }}>Under $50</option>
+                    <option value="100" {{ request('price_max') == '100' ? 'selected' : '' }}>Under $100</option>
+                    <option value="150" {{ request('price_max') == '150' ? 'selected' : '' }}>Under $150</option>
+                    <option value="200" {{ request('price_max') == '200' ? 'selected' : '' }}>Under $200</option>
+                    <option value="300" {{ request('price_max') == '300' ? 'selected' : '' }}>Under $300</option>
                 </select>
             </div>
 
@@ -123,7 +123,7 @@
                 <div>
                     <div style="color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Starting from</div>
                     <div style="display: flex; align-items: baseline; gap: 6px;">
-                        <span style="color: #00ff9e; font-size: 36px; font-weight: 900; line-height: 1;">KES {{ number_format($car->price_per_day, 0) }}</span>
+                        <span style="color: #00ff9e; font-size: 36px; font-weight: 900; line-height: 1;">${{ number_format($car->price_per_day, 0) }}</span>
                         <span style="color: #666; font-size: 13px; font-weight: 500;">/day</span>
                     </div>
                 </div>
