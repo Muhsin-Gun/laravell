@@ -34,12 +34,13 @@ resources/
 ```
 
 ## Key Features
-1. **Car Fleet Management**: 10 premium vehicles (sedans, SUVs, sports cars, trucks) with images
+1. **Car Fleet Management**: 7 premium luxury vehicles (Audi RS7, Aston Martin, BMW M8, Porsche Panamera, Mercedes AMG GT 63, Porsche 911, Range Rover SVR)
 2. **Booking System**: Date selection, price calculation, and checkout flow
-3. **M-Pesa Integration**: STK Push payment with callback handling
+3. **M-Pesa Integration**: STK Push payment with callback handling (server-side amount calculation for security)
 4. **Role-Based Access**: Admin, Employee, and Client roles
-5. **Customer Reviews**: Review display on home page and car detail pages
-6. **Modern UI**: Dark theme with cyan/blue gradients
+5. **Admin Reports**: Revenue reports with CSV export, top rented cars, and transaction history
+6. **Customer Reviews**: Review display on home page and car detail pages
+7. **Modern UI**: Dark theme with cyan/blue gradients
 
 ## Database Setup
 The app uses Replit's PostgreSQL database. Key tables:
@@ -81,6 +82,11 @@ MPESA_ENV=sandbox
 - `/checkout/{booking}` - Payment checkout page
 
 ## Recent Changes
+- Nov 27, 2025: Added admin reports page with revenue analytics, top rented cars, and CSV export
+- Nov 27, 2025: Fixed security issue - payment amount now calculated server-side to prevent manipulation
+- Nov 27, 2025: Updated fleet to 7 featured luxury vehicles with high-quality images
+- Nov 27, 2025: M-Pesa credentials stored as encrypted secrets (MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET, MPESA_PASSKEY)
+- Nov 27, 2025: Contact info updated to +254793027220 and muhsinabdi288@gmail.com
 - Nov 27, 2025: Fixed admin dashboard route errors (cars.create -> admin.cars.create, users.edit -> admin.users.edit)
 - Nov 27, 2025: Fixed view paths in controllers to use capital "Admin" matching directory structure
 - Nov 27, 2025: Updated navbar - removed car icon, kept NEXUS branding only, centered menu with services dropdown
@@ -93,7 +99,6 @@ MPESA_ENV=sandbox
 - Nov 26, 2025: Updated car detail page with improved booking form
 - Nov 26, 2025: Created checkout page with M-Pesa STK Push integration
 - Nov 26, 2025: Added customer reviews section to home page
-- Nov 26, 2025: Seeded database with 10 cars and sample reviews
 
 ## Development Notes
 - Server runs on port 5000
