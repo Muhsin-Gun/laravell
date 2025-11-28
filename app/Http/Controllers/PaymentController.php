@@ -50,8 +50,8 @@ class PaymentController extends Controller
             ], 403);
         }
 
-        // Calculate amount server-side to prevent manipulation (USD to KES conversion at ~130)
-        $amount = (int) round($booking->total_price * 130);
+        // Use the total price directly (already in KSH)
+        $amount = (int) round($booking->total_price);
         
         if ($amount < 1) {
             return response()->json([
@@ -188,9 +188,9 @@ class PaymentController extends Controller
                     'result_description' => $callbackData['ResultDesc']
                 ]);
 
-                // Update booking status
+                // Update booking status - auto-approve after successful payment
                 $payment->order->update([
-                    'status' => 'paid',
+                    'status' => 'confirmed',
                     'payment_status' => 'completed'
                 ]);
 
@@ -243,6 +243,77 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
             Log::error('M-Pesa Token Exception: ' . $e->getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Test STK Push - For testing M-Pesa integration
+     */
+    public function testStkPush(Request $request)
+    {
+        $phone = $request->phone ?? '254793027220';
+        $amount = $request->amount ?? 1;
+        
+        // Get access token
+        $token = $this->getAccessToken();
+        if (!$token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to authenticate with M-Pesa. Check your credentials.'
+            ], 500);
+        }
+
+        // Prepare STK Push request
+        $timestamp = date('YmdHis');
+        $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
+
+        $url = $this->environment === 'sandbox'
+            ? 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+            : 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+
+        $payload = [
+            'BusinessShortCode' => $this->shortcode,
+            'Password' => $password,
+            'Timestamp' => $timestamp,
+            'TransactionType' => 'CustomerPayBillOnline',
+            'Amount' => $amount,
+            'PartyA' => $phone,
+            'PartyB' => $this->shortcode,
+            'PhoneNumber' => $phone,
+            'CallBackURL' => $this->callback_url,
+            'AccountReference' => 'Test-Payment',
+            'TransactionDesc' => 'Test STK Push'
+        ];
+
+        try {
+            $response = Http::withToken($token)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post($url, $payload);
+
+            $result = $response->json();
+            
+            Log::info('Test STK Push Response: ' . json_encode($result));
+
+            if ($response->successful() && isset($result['ResponseCode']) && $result['ResponseCode'] == '0') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'STK Push sent to ' . $phone . '! Check your phone.',
+                    'data' => $result
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $result['errorMessage'] ?? 'STK Push failed',
+                'data' => $result
+            ], 400);
+
+        } catch (\Exception $e) {
+            Log::error('Test STK Push Exception: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
     }
 

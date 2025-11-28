@@ -11,24 +11,25 @@ class CarController extends Controller
     {
         $query = Car::query();
 
-        // Search filter
+        // Search filter (case-insensitive using ILIKE for PostgreSQL)
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = strtolower($request->search);
             $query->where(function($q) use ($search) {
-                $q->where('name', 'LIKE', '%' . $search . '%')
-                  ->orWhere('brand', 'LIKE', '%' . $search . '%')
-                  ->orWhere('description', 'LIKE', '%' . $search . '%');
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(brand) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(type) LIKE ?', ['%' . $search . '%'])
+                  ->orWhereRaw('LOWER(description) LIKE ?', ['%' . $search . '%']);
             });
         }
 
-        // Type filter
+        // Type filter (case-insensitive)
         if ($request->filled('type')) {
-            $query->where('type', $request->type);
+            $query->whereRaw('LOWER(type) = ?', [strtolower($request->type)]);
         }
 
         // Price filter
         if ($request->filled('price_max')) {
-            $query->where('price_per_day', '<=', $request->price_max);
+            $query->where('price_per_day', '<=', (float)$request->price_max);
         }
 
         // Sorting
