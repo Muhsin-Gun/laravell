@@ -8,22 +8,23 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.shared]
-APP_NAME = "NEXUS"
+APP_NAME = "Laravel"
 APP_ENV = "local"
 APP_DEBUG = "true"
-APP_URL = "http://localhost:5000"
+APP_URL = "https://63c68216-35b4-49cf-9a55-3d4f0b4876ac-00-36u2b0szp8w5.riker.replit.dev"
 LOG_CHANNEL = "stack"
 LOG_LEVEL = "debug"
 DB_CONNECTION = "pgsql"
 BROADCAST_DRIVER = "log"
 CACHE_DRIVER = "file"
-FILESYSTEM_DISK = "public"
+FILESYSTEM_DISK = "local"
 QUEUE_CONNECTION = "sync"
 SESSION_DRIVER = "file"
 SESSION_LIFETIME = "120"
-APP_KEY = "base64:ZO5fuue6yVMw9oc+4tw5VwwNq8ViVDeRY3Jcm8qjrkQ="
+APP_KEY = "base64:vUsIX20nkLtuGgzoxePf/luKMUhlrfL/y/+YVor/UWQ="
 MPESA_SHORTCODE = "174379"
 MPESA_ENV = "sandbox"
+MPESA_CALLBACK_URL = "https://63c68216-35b4-49cf-9a55-3d4f0b4876ac-00-36u2b0szp8w5.riker.replit.dev/payment/mpesa/callback"
 
 [workflows]
 runButton = "Project"

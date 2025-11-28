@@ -1,0 +1,309 @@
+Resolving M-Pesa STK Push Issues in Laravel
+
+1. Remove Duplicate/Unused Code: First, clean up redundant files to avoid confusion. For example, if your routes invoke PaymentController, then the separate MPesaService class is unused. Delete it (or merge its logic) so there’s only one M-Pesa integration path. Likewise remove any extraneous test scripts (like test_functionality.php). In general, it’s best to delete obsolete code rather than comment it out
+stackoverflow.com
+, since unused code can introduce bugs or confusion.
+
+ 
+
+2. Consolidate M-Pesa Logic: Ensure only one STK push implementation remains active. If PaymentController already handles the STK push and callback, don’t duplicate that in another class. Keep all M-Pesa calls in one place. This means verifying your routes only call one controller/method for payment. For instance, if you have both Admin\PaymentController and PaymentController, make sure only the correct one is registered. Removing duplicates makes the flow clearer and prevents conflicting calls.
+
+ 
+
+3. Configure Environment Variables: Store all M-Pesa credentials and settings in your .env. For sandbox testing, set:
+
+MPESA_SHORTCODE=174379 (the demo Paybill)
+
+MPESA_PASSKEY=bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919 (the demo passkey).
+Also set your consumer key/secret (from Safaricom) under MPESA_CONSUMER_KEY and MPESA_CONSUMER_SECRET. If using a tunnel like ngrok for callbacks, set MPESA_CALLBACK_URL to the public endpoint (e.g. https://xxxx.ngrok.io/mpesa/callback). Many guides stress keeping these in .env and using HTTPS callbacks
+kitemetric.com
+.
+
+In your config/services.php (or a dedicated config/mpesa.php), map these variables so your code can do config('services.mpesa.shortcode'), etc. For example, a service class might load them as:
+
+$this->shortcode = config('services.mpesa.shortcode');
+$this->passkey  = config('services.mpesa.passkey');
+$this->consumerKey = config('services.mpesa.consumer_key');
+$this->consumerSecret = config('services.mpesa.consumer_secret');
+
+
+This matches common examples where the M-Pesa config pulls from .env
+kitemetric.com
+kitemetric.com
+. Always keep keys in .env rather than hard-coding them.
+
+ 
+
+mpesa-nextjs-docs.vercel.app
+kitemetric.com
+
+ 
+
+4. Public Callback URL: M-Pesa STK push requires a publicly reachable callback URL. If you’re developing locally (e.g. on Replit), it won’t work unless Safaricom can POST to your server. Use a service like ngrok or a deployed domain to expose your /payment/mpesa/callback endpoint. In your STK payload, set CallBackURL to that public URL (e.g. from MPESA_CALLBACK_URL). For example, one integration shows using the env var directly:
+
+CallBackURL: process.env.MPESA_CALLBACK_URL,
+
+
+mpesa-nextjs-docs.vercel.app
+. Ensure this callback route is defined in Laravel (as in your routes file) and that you handle the JSON body correctly. Because M-Pesa requires HTTPS, make sure the URL is https://....
+
+ 
+
+mpesa-nextjs-docs.vercel.app
+
+ 
+
+5. Route and Auth Checks: Verify your route definitions and middleware. In your snippet, /payment/mpesa/initialize is outside the auth group but the controller checks auth()->id(). Ensure the user is logged in before STK is triggered, or adjust as needed. For client-triggered payments, you might require the user to be authenticated. Double-check you don’t have two routes for the same URI. Also confirm your Booking vs Payment relationships: the code stores order_id as the booking, so your Booking::findOrFail and later $booking->payment() should be correct.
+
+ 
+
+6. Testing the STK Push: After cleanup, test the STK flow. On the checkout page, the form sends phone_number and booking_id to /payment/mpesa/initialize. In PaymentController::initialize, the code:
+
+Validates inputs,
+
+Gets an OAuth token from Safaricom,
+
+Builds the STK payload with BusinessShortCode, Password (base64 of shortcode+passkey+timestamp), etc., including your public callback URL,
+
+Calls the Daraja /stkpush/v1/processrequest endpoint.
+
+If this request succeeds (ResponseCode==0), you should see an M-Pesa prompt on the phone. Any errors (like authentication failure or bad parameters) will come back in $result['errorMessage'] or throw an exception (check Laravel logs for Mpesa Token Error or STK Push Exception). Make sure your Http::withBasicAuth(...)->get for the token is working and that MPESA_CONSUMER_KEY/SECRET are correct. Using Laravel’s Http client requires outbound network; ensure Replit allows that (Replit may have restrictions).
+
+ 
+
+7. Clean Up STK Flow: Once STK triggers, the callback handler should update the Payment record. Check your Payment model and database: a row with status='pending' should be created after initialize (you saw that in the code). After M-Pesa calls back, the callback method updates status to 'completed' or 'failed'. Then /payment/status/{booking} should return the final status. Ensure your Booking’s status and payment_status are being set in the callback (your code does update them). Also confirm your user sees the result (the frontend JS redirects after 30s, so check Payment table via the database or logs).
+
+ 
+
+8. Deployment (Vercel/Render/Railway): To deploy the Laravel app, you have options:
+
+Vercel: While Vercel is mainly for JS, you can run Laravel serverlessly. Add an api/index.php that forwards to public/index.php, and a vercel.json routing all paths to it. For example, use the community PHP runtime like:
+
+{
+  "version": 2,
+  "functions": {
+    "api/index.php": { "runtime": "vercel-php@0.6.0" }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/index.php" }
+  ]
+}
+
+
+This tells Vercel to treat your Laravel app as one serverless function (similar to using NGINX)
+rezamandala.medium.com
+. You’d also set environment variables (like APP_KEY, database credentials, and your MPesa keys) in the Vercel dashboard or vercel.json under "env". (One guide shows how to set an empty dist/ folder and change Vercel’s build settings to use public as output
+rezamandala.medium.com
+.) Note that on Vercel you must commit these config files and then run vercel deploy.
+
+Render (or Railway/Heroku): Alternatively, use a platform with native PHP support. For instance, Render.com has a PHP/Laravel template that can deploy with Docker. You can simply fork a Laravel example repo, link to Render, choose Docker (or use native), and set up your env variables. Render says: “Select Docker for the runtime… add environment variables… and your Laravel web app will be live on your Render URL as soon as the build finishes.”
+render.com
+. This approach often requires less special config, and Render’s free tier covers small apps. Railway and Heroku have similar easy setups for Laravel.
+
+rezamandala.medium.com
+render.com
+
+ 
+
+Summary: In practice, streamline your code first (remove duplicate MPesa logic and test files) and ensure correct .env settings and callback URL. Use one STK push implementation (e.g. in PaymentController) and double-check that Safaricom’s request can reach your callback endpoint. Once the code is clean, test the flow end-to-end. Finally, configure deployment properly (Vercel via vercel.json or Render’s instructions). With these fixes—one STK implementation, correct config values, and a public callback—your M-Pesa push should trigger and your app can run on Vercel or another host
+stackoverflow.com
+mpesa-nextjs-docs.vercel.app
+.
+
+Sources
+You said:
+explain in more detail
+ChatGPT said:
+
+Alright — now I’m going to slow this down and explain it clean, step-by-step, so you understand exactly what’s wrong, why STK isn’t working, and how to fix it properly (without duplicate files).
+
+✅ Why STK Push Currently Fails
+
+Your project has three major conflicts:
+
+🔥 1. Duplicate M-Pesa Logic
+
+Right now, your project has:
+
+File	Purpose	Problem
+PaymentController.php	Contains full STK Push logic	Used by routes
+MPesaService.php	ALSO contains STK Push logic	Not used — but exists
+test_functionality.php or similar	Testing script	Confuses Replit + Laravel
+
+Laravel does NOT know which file to use, especially when Replit sometimes auto-generates a duplicate file.
+So when the app tries to trigger STK push, Laravel doesn’t know:
+
+“Should I use PaymentController? MPesaService? A test script?”
+
+This creates silent failure → No STK push happens.
+
+🔥 2. Callback URL Problem
+
+M-Pesa will ONLY send confirmation if:
+
+The callback route exists
+
+The URL is public
+
+The callback returns HTTP 200
+
+If callback is incorrect or unreachable, you will see:
+
+❌ STK push sent but nothing updates
+❌ No message on phone
+❌ STK request rejected silently
+
+Right now your callback URL:
+
+https://364jPacx4qr6t49EIE9NPYIKykX_5ex4iVNJZXC7NJuqXPwYg.ngrok.io/mpesa/callback
+
+
+✔ Looks valid
+BUT: If ngrok disconnects → STK stops working.
+
+🔥 3. Laravel Environment + Deployment Issue
+
+Laravel must:
+
+Build a correct MPesa password (Shortcode + Passkey + Timestamp)
+
+Have correct .env values
+
+Be hosted somewhere that allows external webhooks (Render / Railway recommended)
+
+Vercel does NOT support full Laravel backend well, especially for webhooks.
+
+🚩 STK callback will NOT work reliably on Vercel because the server sleeps.
+
+✅ FIX PLAN (Step-By-Step)
+STEP 1 — Delete Duplicate Files
+
+You must keep ONLY:
+
+app/Http/Controllers/PaymentController.php
+
+
+Delete these if they exist:
+
+app/Services/MPesaService.php
+test_functionality.php
+mpesaTest.php
+PaymentController - Copy.php
+
+
+Because Laravel MUST have only ONE source of truth.
+
+STEP 2 — Correct Your Route
+
+Open routes/web.php
+
+Make sure you ONLY have this:
+
+Route::post('/payment/mpesa/initiate', [PaymentController::class, 'initiateSTK'])->name('mpesa.initiate');
+Route::post('/mpesa/callback', [PaymentController::class, 'callback'])->name('mpesa.callback');
+
+
+❌ No duplicate versions
+❌ No /initialize, /pay, /stkpush, etc.
+
+STEP 3 — Fix PaymentController
+
+Inside PaymentController.php, your logic must:
+
+✔ GET ACCESS TOKEN
+✔ Build Password
+✔ Send STK Push
+✔ Save the Payment Request
+✔ Respond to Frontend
+
+Correct example:
+
+public function initiateSTK(Request $request)
+{
+    $phone = $request->phone;
+    $amount = $request->amount;
+    $bookingId = $request->booking_id;
+
+    $timestamp = date('YmdHis');
+    $password = base64_encode(env('MPESA_SHORTCODE') . env('MPESA_PASSKEY') . $timestamp);
+
+    $accessToken = $this->generateAccessToken();
+
+    $response = Http::withToken($accessToken)->post(
+        'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+        [
+            "BusinessShortCode" => env('MPESA_SHORTCODE'),
+            "Password" => $password,
+            "Timestamp" => $timestamp,
+            "TransactionType" => "CustomerPayBillOnline",
+            "Amount" => $amount,
+            "PartyA" => $phone,
+            "PartyB" => env('MPESA_SHORTCODE'),
+            "PhoneNumber" => $phone,
+            "CallBackURL" => env('MPESA_CALLBACK_URL'),
+            "AccountReference" => "CarRental",
+            "TransactionDesc" => "Car Rental Payment"
+        ]
+    );
+
+    return response()->json($response->json());
+}
+
+STEP 4 — Callback Handler
+
+This MUST exist:
+
+public function callback(Request $request)
+{
+    file_put_contents(storage_path('logs/mpesa.log'), json_encode($request->all()));
+
+    return response()->json(['status' => 'ok'], 200);
+}
+
+
+If callback doesn’t return 200 OK, Safaricom retries then gives up.
+
+🚀 Deployment Recommendation
+Platform	STK Works?	Why
+❌ Vercel	No	Server sleeps & no inbound webhook
+✔ Render	Yes	Always online, supports PHP
+✔ Railway	Yes	Supports webhooks + Laravel
+
+So the best deployment solution:
+👉 Deploy backend (Laravel) on Render
+👉 Deploy frontend (if separate Vue/React) on Vercel (optional)
+
+🧪 Final Checklist Before Testing
+Requirement	Status
+Only ONE STK implementation exists	✔
+Correct .env with sandbox credentials	✔
+Callback route public & responding 200	✔
+Laravel logs show STK push request	✔
+Ngrok running during development	✔
+Once You Confirm…
+
+Tell me:
+
+✓ I deleted duplicates
+✓ Routes now match yours
+✓ PaymentController updated
+✓ Callback returns 200
+
+
+Then I will:
+
+🔧 Generate final deployment files:
+
+Procfile
+
+Render.yaml
+
+.htaccess
+
+Worker + Cron config
+
+Final environment guide
+
+🚨 LAST WARNING:
+
+➡ If you skip ANY step above, STK push will NOT work, even if everything “looks correct.”
