@@ -1,4 +1,4 @@
-modules = ["php-8.2", "web", "nodejs-20"]
+modules = ["php-8.2", "web", "nodejs-20", "postgresql-16"]
 [agent]
 expertMode = true
 
@@ -11,7 +11,7 @@ channel = "stable-25_05"
 APP_NAME = "Laravel"
 APP_ENV = "local"
 APP_DEBUG = "true"
-APP_URL = "https://63c68216-35b4-49cf-9a55-3d4f0b4876ac-00-36u2b0szp8w5.riker.replit.dev"
+APP_URL = "https://d3f8b008-f0cf-40b8-b480-e503e064ec17-00-3gr3xd9okcesz.spock.replit.dev"
 LOG_CHANNEL = "stack"
 LOG_LEVEL = "debug"
 DB_CONNECTION = "pgsql"
@@ -24,7 +24,7 @@ SESSION_LIFETIME = "120"
 APP_KEY = "base64:vUsIX20nkLtuGgzoxePf/luKMUhlrfL/y/+YVor/UWQ="
 MPESA_SHORTCODE = "174379"
 MPESA_ENV = "sandbox"
-MPESA_CALLBACK_URL = "https://63c68216-35b4-49cf-9a55-3d4f0b4876ac-00-36u2b0szp8w5.riker.replit.dev/payment/mpesa/callback"
+MPESA_CALLBACK_URL = "https://d3f8b008-f0cf-40b8-b480-e503e064ec17-00-3gr3xd9okcesz.spock.replit.dev/payment/mpesa/callback"
 
 [workflows]
 runButton = "Project"
@@ -61,6 +61,10 @@ externalPort = 5000
 [[ports]]
 localPort = 34555
 externalPort = 3001
+
+[[ports]]
+localPort = 42981
+externalPort = 4200
 
 [[ports]]
 localPort = 45543

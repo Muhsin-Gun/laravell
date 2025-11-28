@@ -67,6 +67,12 @@ Route::middleware(['auth', 'role:client'])->group(function () {
 // Payment Callbacks (Public - no auth needed for M-Pesa callback)
 Route::post('/payment/mpesa/callback', [PaymentController::class, 'callback'])->name('payment.mpesa.callback');
 
+// Public STK Push Test Route - SANDBOX ONLY for testing
+if (config('services.mpesa.env') === 'sandbox') {
+    Route::get('/buy-car/{car}', [PaymentController::class, 'showBuyForm'])->name('buy.car.form');
+    Route::post('/buy-car/{car}', [PaymentController::class, 'buyCarDirect'])->name('buy.car');
+}
+
 // Test STK Push Route (admin only - for testing M-Pesa integration)
 Route::middleware(['auth', 'role:admin'])->get('/admin/test-stk-push', [PaymentController::class, 'testStkPush'])->name('payment.test.stk');
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Car;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +28,7 @@ class PaymentController extends Controller
         $this->consumer_secret = config('services.mpesa.consumer_secret');
         $this->passkey = config('services.mpesa.passkey');
         $this->shortcode = config('services.mpesa.shortcode');
-        $this->callback_url = route('payment.mpesa.callback');
+        $this->callback_url = config('services.mpesa.callback_url');
         $this->environment = config('services.mpesa.env', 'sandbox');
     }
 
@@ -345,5 +347,248 @@ class PaymentController extends Controller
             'amount' => $payment->amount,
             'mpesa_receipt_number' => $payment->mpesa_receipt_number
         ]);
+    }
+
+    /**
+     * Show Buy Car Form - Public route for testing STK Push
+     */
+    public function showBuyForm(Car $car)
+    {
+        return view('payment.buy-car', compact('car'));
+    }
+
+    /**
+     * Buy Car Direct - Public STK Push for testing
+     */
+    public function buyCarDirect(Request $request, Car $car)
+    {
+        $request->validate([
+            'phone_number' => 'required|string',
+        ]);
+
+        // Format phone number to 254XXXXXXXXX
+        $phone = $this->formatPhoneNumber($request->phone_number);
+        
+        if (!$phone) {
+            return back()->with('error', 'Invalid phone number format. Use 07XXXXXXXX or 254XXXXXXXXX');
+        }
+
+        // Use price_per_day as purchase amount for testing (1 KSH minimum for sandbox)
+        $amount = max(1, (int) round($car->price_per_day));
+
+        Log::info("Buy Car Direct - Car: {$car->name}, Amount: {$amount}, Phone: {$phone}");
+        Log::info("Callback URL: {$this->callback_url}");
+
+        // Get access token
+        $token = $this->getAccessToken();
+        if (!$token) {
+            Log::error('Failed to get M-Pesa access token');
+            return back()->with('error', 'Failed to connect to M-Pesa. Please try again.');
+        }
+
+        Log::info('M-Pesa token obtained successfully');
+
+        // Prepare STK Push request
+        $timestamp = date('YmdHis');
+        $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
+
+        $url = $this->environment === 'sandbox'
+            ? 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+            : 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+
+        $payload = [
+            'BusinessShortCode' => $this->shortcode,
+            'Password' => $password,
+            'Timestamp' => $timestamp,
+            'TransactionType' => 'CustomerPayBillOnline',
+            'Amount' => $amount,
+            'PartyA' => $phone,
+            'PartyB' => $this->shortcode,
+            'PhoneNumber' => $phone,
+            'CallBackURL' => $this->callback_url,
+            'AccountReference' => 'Car-' . $car->id,
+            'TransactionDesc' => 'Purchase ' . $car->name
+        ];
+
+        Log::info('STK Push Payload', $payload);
+
+        try {
+            $response = Http::withToken($token)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post($url, $payload);
+
+            $result = $response->json();
+
+            Log::info('STK Push Response', ['status' => $response->status(), 'body' => $result]);
+
+            if ($response->successful() && isset($result['ResponseCode']) && $result['ResponseCode'] == '0') {
+                // Create a temporary user for direct purchase if needed
+                $user = auth()->user();
+                if (!$user) {
+                    $user = User::firstOrCreate(
+                        ['email' => 'guest_' . $phone . '@temp.com'],
+                        [
+                            'name' => 'Guest Buyer',
+                            'password' => bcrypt('temp_' . time()),
+                            'role' => 'client'
+                        ]
+                    );
+                }
+
+                // Create a booking for this purchase
+                $booking = Booking::create([
+                    'user_id' => $user->id,
+                    'car_id' => $car->id,
+                    'start_date' => now(),
+                    'end_date' => now()->addDay(),
+                    'total_price' => $amount,
+                    'status' => 'pending',
+                    'payment_status' => 'pending'
+                ]);
+
+                // Store payment record
+                Payment::create([
+                    'order_id' => $booking->id,
+                    'checkout_request_id' => $result['CheckoutRequestID'],
+                    'merchant_request_id' => $result['MerchantRequestID'],
+                    'phone_number' => $phone,
+                    'amount' => $amount,
+                    'status' => 'pending',
+                    'result_code' => $result['ResponseCode'],
+                    'result_description' => $result['ResponseDescription']
+                ]);
+
+                return back()->with('success', 'Payment request sent to ' . $phone . '! Check your phone for the M-Pesa prompt.');
+            }
+
+            $errorMessage = $result['errorMessage'] ?? $result['ResponseDescription'] ?? 'Unknown error';
+            Log::error('STK Push Failed', ['error' => $errorMessage, 'response' => $result]);
+
+            return back()->with('error', 'Payment request failed: ' . $errorMessage);
+
+        } catch (\Exception $e) {
+            Log::error('STK Push Exception: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Format phone number to 254XXXXXXXXX format
+     */
+    private function formatPhoneNumber($phone)
+    {
+        // Remove all non-numeric characters
+        $phone = preg_replace('/\D/', '', $phone);
+
+        // Handle different formats
+        if (strlen($phone) == 9) {
+            // Format: 7XXXXXXXX
+            return '254' . $phone;
+        } elseif (strlen($phone) == 10 && substr($phone, 0, 1) == '0') {
+            // Format: 07XXXXXXXX
+            return '254' . substr($phone, 1);
+        } elseif (strlen($phone) == 12 && substr($phone, 0, 3) == '254') {
+            // Format: 254XXXXXXXXX
+            return $phone;
+        } elseif (strlen($phone) == 13 && substr($phone, 0, 4) == '+254') {
+            // Format: +254XXXXXXXXX
+            return substr($phone, 1);
+        }
+
+        return null;
+    }
+
+    /**
+     * API Test STK Push - Public route for testing (no CSRF)
+     */
+    public function apiTestStkPush(Request $request)
+    {
+        $phone = $request->phone ?? '254793027220';
+        $amount = $request->amount ?? 1;
+        
+        // Format phone number
+        $phone = $this->formatPhoneNumber($phone);
+        if (!$phone) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid phone number format'
+            ], 400);
+        }
+
+        Log::info("API Test STK Push - Phone: {$phone}, Amount: {$amount}");
+        Log::info("Callback URL: {$this->callback_url}");
+        Log::info("Shortcode: {$this->shortcode}");
+        
+        // Get access token
+        $token = $this->getAccessToken();
+        if (!$token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to authenticate with M-Pesa. Check your credentials.',
+                'debug' => [
+                    'consumer_key_set' => !empty($this->consumer_key),
+                    'consumer_secret_set' => !empty($this->consumer_secret),
+                ]
+            ], 500);
+        }
+
+        Log::info('Access token obtained successfully');
+
+        // Prepare STK Push request
+        $timestamp = date('YmdHis');
+        $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
+
+        $url = $this->environment === 'sandbox'
+            ? 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+            : 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+
+        $payload = [
+            'BusinessShortCode' => $this->shortcode,
+            'Password' => $password,
+            'Timestamp' => $timestamp,
+            'TransactionType' => 'CustomerPayBillOnline',
+            'Amount' => (int) $amount,
+            'PartyA' => $phone,
+            'PartyB' => $this->shortcode,
+            'PhoneNumber' => $phone,
+            'CallBackURL' => $this->callback_url,
+            'AccountReference' => 'Test-Payment',
+            'TransactionDesc' => 'Test STK Push'
+        ];
+
+        Log::info('STK Push Payload', $payload);
+
+        try {
+            $response = Http::withToken($token)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post($url, $payload);
+
+            $result = $response->json();
+            
+            Log::info('STK Push Response', ['status' => $response->status(), 'body' => $result]);
+
+            if ($response->successful() && isset($result['ResponseCode']) && $result['ResponseCode'] == '0') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'STK Push sent to ' . $phone . '! Check your phone.',
+                    'data' => $result,
+                    'callback_url' => $this->callback_url
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $result['errorMessage'] ?? $result['ResponseDescription'] ?? 'STK Push failed',
+                'data' => $result,
+                'callback_url' => $this->callback_url
+            ], 400);
+
+        } catch (\Exception $e) {
+            Log::error('API Test STK Push Exception: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

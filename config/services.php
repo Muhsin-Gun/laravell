@@ -37,6 +37,7 @@ return [
         'shortcode' => env('MPESA_SHORTCODE'),
         'passkey' => env('MPESA_PASSKEY'),
         'env' => env('MPESA_ENV', 'sandbox'),
+        'callback_url' => env('MPESA_CALLBACK_URL'),
     ],
 
 ];
