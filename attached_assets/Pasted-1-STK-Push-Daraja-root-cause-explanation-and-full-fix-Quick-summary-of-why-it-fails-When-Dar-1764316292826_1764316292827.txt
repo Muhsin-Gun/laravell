@@ -1,0 +1,530 @@
+1) STK Push (Daraja) — root cause, explanation, and full fix
+Quick summary of why it fails
+
+When Daraja returns “BadRequest — Invalid Callback URL” it means the CallBackURL you sent in the STK push request was rejected. Typical causes:
+
+the URL is not HTTPS (must be https://),
+
+the domain/path you sent does not match the route your app is listening on,
+
+the URL is unreachable from public internet or blocked by the host (Replit/ngrok mismatch),
+
+or the callback route is protected by CSRF/auth, or redirects (Daraja needs to POST directly and receive a 200/204).
+
+From your .env I see MPESA_CALLBACK_URL set to an ngrok.io URL while your code builds route('payment.mpesa.callback') (likely /payment/mpesa/callback) — domain or path mismatch is almost certainly the immediate cause.
+
+Must-do checklist (high priority)
+
+Pick one public HTTPS callback URL and use it everywhere (code, .env, Daraja portal). No mixing.
+
+Ensure the route path exactly matches the path you send to Daraja (case and trailing slash matter).
+
+Make the callback route public: disable CSRF for it and do not require auth.
+
+Ensure the endpoint returns HTTP 200 quickly after saving/logging the callback — Daraja expects a 200.
+
+Log every incoming callback (headers + body) to storage/logs/laravel.log so you can see Daraja’s request.
+
+If hosting (Replit) blocks incoming external POSTs, use ngrok or a platform that accepts the callback or ask Replit support to allow inbound POSTs on that path.
+
+How Daraja STK Push flow works (concise)
+
+Your app requests an OAuth token from Safaricom using MPESA_CONSUMER_KEY and MPESA_CONSUMER_SECRET.
+
+Using that token, you POST to /mpesa/stkpush/v1/processrequest with:
+
+BusinessShortCode, Password (base64 of Shortcode+Passkey+Timestamp), Timestamp, TransactionType, Amount, PartyA (payer phone), PartyB (till/shortcode), PhoneNumber, CallBackURL, AccountReference, TransactionDesc.
+
+Safaricom calls the CallBackURL you provided, posting the result. Your callback route must accept that POST and return 200.
+
+Concrete code fixes (Laravel)
+1. Add mpesa config
+
+Create/modify config/services.php to centralize MPESA settings:
+
+// config/services.php
+return [
+    // ...
+    'mpesa' => [
+        'env' => env('MPESA_ENV', 'sandbox'),
+        'consumer_key' => env('MPESA_CONSUMER_KEY'),
+        'consumer_secret' => env('MPESA_CONSUMER_SECRET'),
+        'shortcode' => env('MPESA_SHORTCODE'),
+        'passkey' => env('MPESA_PASSKEY'),
+        // Use explicit env var
+        'callback_url' => env('MPESA_CALLBACK_URL'),
+    ],
+];
+
+
+Make sure your .env has MPESA_CALLBACK_URL set to the exact public HTTPS URL you want (no trailing spaces).
+
+2. Define routes (public callback, no auth)
+
+In routes/web.php (or routes/api.php if you prefer), add:
+
+use App\Http\Controllers\PaymentController;
+
+Route::post('/mpesa/callback', [PaymentController::class, 'handleCallback'])->name('payment.mpesa.callback');
+// Checkout endpoint (user clicks pay)
+Route::post('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
+
+
+Important: payment.mpesa.callback must exactly match MPESA_CALLBACK_URL path.
+
+3. Exempt callback from CSRF
+
+Daraja will POST to your endpoint — it cannot provide Laravel CSRF token. Add the route to VerifyCsrfToken exceptions:
+
+// app/Http/Middleware/VerifyCsrfToken.php
+protected $except = [
+    'mpesa/callback', // or '/mpesa/callback' depending on your routes file
+];
+
+4. PaymentController methods (initiate & handle callback)
+
+Below is a robust sample using Laravel HTTP client. Replace or integrate into your controller.
+
+// app/Http/Controllers/PaymentController.php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use App\Models\Payment; // model to persist STK requests & callbacks
+
+class PaymentController extends Controller
+{
+    protected $shortcode;
+    protected $passkey;
+    protected $consumerKey;
+    protected $consumerSecret;
+    protected $callbackUrl;
+    protected $envBase;
+
+    public function __construct()
+    {
+        $this->shortcode = config('services.mpesa.shortcode');
+        $this->passkey = config('services.mpesa.passkey');
+        $this->consumerKey = config('services.mpesa.consumer_key');
+        $this->consumerSecret = config('services.mpesa.consumer_secret');
+        $this->callbackUrl = config('services.mpesa.callback_url');
+        $this->envBase = config('services.mpesa.env') === 'production'
+            ? 'https://api.safaricom.co.ke'
+            : 'https://sandbox.safaricom.co.ke';
+    }
+
+    // Called when user clicks pay -> triggers STK Push
+    public function checkout(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'phone' => 'required|string',
+            'account_reference' => 'nullable|string|max:50',
+        ]);
+
+        $amount = (int) $request->amount;
+        $phone = $this->formatPhone($request->phone); // ensure 2547xx...
+        $accountRef = $request->account_reference ?? 'OrderPayment';
+
+        // 1) Get OAuth token
+        $token = $this->getAccessToken();
+        if (!$token) {
+            return response()->json(['error' => 'Unable to fetch MPESA token'], 500);
+        }
+
+        // 2) timestamp & password
+        $timestamp = now()->format('YmdHis'); // e.g. 20231107123045
+        $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
+
+        $payload = [
+            'BusinessShortCode' => $this->shortcode,
+            'Password' => $password,
+            'Timestamp' => $timestamp,
+            'TransactionType' => 'CustomerPayBillOnline',
+            'Amount' => $amount,
+            'PartyA' => $phone,
+            'PartyB' => $this->shortcode,
+            'PhoneNumber' => $phone,
+            'CallBackURL' => $this->callbackUrl,
+            'AccountReference' => $accountRef,
+            'TransactionDesc' => 'Payment for order',
+        ];
+
+        Log::info('Initiating STK push', ['payload' => $payload]);
+
+        $resp = Http::withToken($token)
+            ->post("{$this->envBase}/mpesa/stkpush/v1/processrequest", $payload);
+
+        Log::info('STK response', ['status' => $resp->status(), 'body' => $resp->body()]);
+
+        // Persist STK request so you can match callback later
+        $payment = Payment::create([
+            'amount' => $amount,
+            'phone' => $phone,
+            'account_reference' => $accountRef,
+            'request_body' => json_encode($payload),
+            'response_body' => $resp->body(),
+            'status' => $resp->successful() ? 'pending' : 'failed',
+        ]);
+
+        if ($resp->successful()) {
+            return response()->json(['message' => 'STK push sent', 'data' => $resp->json(), 'payment_id' => $payment->id]);
+        }
+
+        return response()->json(['error' => 'STK push failed', 'details' => $resp->json()], 400);
+    }
+
+    protected function getAccessToken()
+    {
+        $url = "{$this->envBase}/oauth/v1/generate?grant_type=client_credentials";
+        $resp = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)->get($url);
+
+        if ($resp->successful()) {
+            return $resp->json()['access_token'] ?? null;
+        }
+
+        Log::error('MPESA token error', ['resp' => $resp->body()]);
+        return null;
+    }
+
+    protected function formatPhone($phone)
+    {
+        $p = preg_replace('/\D/', '', $phone);
+        if (strlen($p) == 9) { // e.g. 7xx...
+            return '254' . ltrim($p, '0');
+        } elseif (strlen($p) == 10 && substr($p, 0, 1) == '0') {
+            return '254' . substr($p, 1);
+        } elseif (substr($p,0,3) == '254') {
+            return $p;
+        }
+        return $p;
+    }
+
+    // Safaricom callback handler — must accept POST
+    public function handleCallback(Request $request)
+    {
+        // Log every callback (headers + body)
+        Log::info('MPESA callback headers', $request->headers->all());
+        Log::info('MPESA callback body', $request->all());
+
+        // Save callback into DB for processing (match via CheckoutRequestID or MerchantRequestID)
+        $data = $request->all();
+
+        // Example: saving raw body and marking payment complete if success
+        $checkoutRequestID = data_get($data, 'Body.stkCallback.CheckoutRequestID');
+        $resultCode = data_get($data, 'Body.stkCallback.ResultCode');
+
+        // Update the Payment record if possible
+        if ($checkoutRequestID) {
+            $payment = Payment::where('response_body', 'LIKE', "%{$checkoutRequestID}%")->first();
+            if ($payment) {
+                $payment->callback_body = json_encode($data);
+                $payment->status = ($resultCode === 0) ? 'paid' : 'failed';
+                $payment->callback_received_at = now();
+                $payment->save();
+            }
+        } else {
+            // No checkout ID — create log entry
+            \DB::table('mpesa_callbacks')->insert([
+                'payload' => json_encode($data),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Important: return 200 OK so Daraja considers the callback delivered
+        return response()->json(['result' => 'received'], 200);
+    }
+}
+
+
+Key points in the code above:
+
+We use config('services.mpesa.callback_url') so the callback URL is configurable via .env.
+
+We store request + response so you can match callback to STK push (use CheckoutRequestID/MerchantRequestID).
+
+Callback returns 200 quickly after persisting.
+
+Database model suggestion: payments table
+
+You mentioned payments and payouts — here's how they should differ:
+
+payments — inbound customer payments (STK pushes initiated by customers). Fields:
+
+id, amount, phone, account_reference, request_body (json), response_body (json), callback_body (json), status (pending/paid/failed), checkout_request_id, merchant_request_id, callback_received_at, created_at, updated_at.
+
+payouts — outbound disbursements (you send funds to drivers / vendors). Fields:
+
+id, amount, beneficiary_phone, reference, status, response_body, created_at, updated_at.
+
+Suggested payments migration:
+
+Schema::create('payments', function (Blueprint $table) {
+    $table->id();
+    $table->string('checkout_request_id')->nullable()->index();
+    $table->string('merchant_request_id')->nullable()->index();
+    $table->string('phone')->nullable();
+    $table->decimal('amount', 10, 2);
+    $table->string('account_reference')->nullable();
+    $table->text('request_body')->nullable();
+    $table->text('response_body')->nullable();
+    $table->text('callback_body')->nullable();
+    $table->enum('status', ['pending','paid','failed'])->default('pending');
+    $table->timestamp('callback_received_at')->nullable();
+    $table->timestamps();
+});
+
+
+If your system currently uses both payouts and payments but uses them interchangeably in code, that can easily cause logic errors. Decide the role for each and refactor controller logic to write to the correct table.
+
+Why routing, domain and path must match exactly
+
+If your app sends CallBackURL = https://X.ngrok.io/mpesa/callback but your app's route is /payment/mpesa/callback, Safaricom's POST will go to the X.ngrok.io/mpesa/callback path which your app may not be listening on → 404 or no response → Daraja treats URL as invalid/unreachable.
+
+Also, if the CallBackURL redirects (301/302) to another path, some providers reject that as invalid.
+
+Debugging steps (do these now)
+
+Decide the exact callback URL: e.g. https://your-app.replit.dev/mpesa/callback or https://abcd.ngrok.io/payment/mpesa/callback. Put that URL in .env MPESA_CALLBACK_URL.
+
+Update config/services.php to use it (see snippet).
+
+Update code to use config('services.mpesa.callback_url') (see controller).
+
+Ensure the route exists and is excluded from CSRF.
+
+Submit a test STK push and inspect storage/logs/laravel.log — you should see the STK response and then later the callback logs.
+
+If no callback arrives, inspect:
+
+Did STK push response contain CheckoutRequestID? If no, STK push failed. Log the response_body.
+
+If STK push response looks OK but no callback arrives, test your callback URL manually (use curl -X POST https://your-callback -d '{"test":"ok"}') to confirm external POSTs reach your app.
+
+Use ngrok or requestbin to see if Safaricom is POSTing.
+
+What to tell Replit support (copy/paste)
+
+If you need Replit support, send them a concise message like this:
+
+Hi Replit team — my Laravel app is hosted at https://<my-replit>.replit.dev. I’m integrating Safaricom Daraja STK Push which will POST to my callback path /mpesa/callback. Safaricom reports BadRequest - Invalid Callback URL. I need you to confirm:
+
+That external services can POST to https://<my-replit>.replit.dev/mpesa/callback (no firewall/ACL blocking).
+
+That Replit’s reverse proxy does not rewrite or redirect POST requests to that path.
+
+If any TLS certificate rewrite or custom headers are added that could cause Daraja to fail to connect.
+
+I will provide logs showing STK request and their response; if you can simulate an external POST to /mpesa/callback and confirm it reaches my container, please do so and provide evidence (HTTP status code, headers).
+
+Also include:
+
+Example STK payload you sent (safely redact passkey/consumer secret).
+
+A timestamp & CheckoutRequestID from your logs.
+
+The exact MPESA_CALLBACK_URL value you configured.
+
+2) How to trigger STK Push immediately when user clicks Pay (front-end flow)
+Minimal front-end JS (AJAX)
+
+This will POST to your server's /checkout endpoint which runs the checkout() controller above and initiates the STK push.
+
+<!-- checkout.blade.php -->
+<form id="checkoutForm">
+  <input name="amount" id="amount" value="100" />
+  <input name="phone" id="phone" value="07..." />
+  <button id="payBtn">Pay</button>
+  @csrf
+</form>
+
+<script>
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const token = document.querySelector('input[name="_token"]').value;
+  const amount = document.getElementById('amount').value;
+  const phone = document.getElementById('phone').value;
+
+  document.getElementById('payBtn').disabled = true;
+
+  try {
+    const res = await fetch('/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': token
+      },
+      body: JSON.stringify({ amount, phone })
+    });
+    const data = await res.json();
+    console.log('checkout response', data);
+    alert(data.message ?? JSON.stringify(data));
+  } catch (err) {
+    console.error(err);
+    alert('Error initiating payment');
+  } finally {
+    document.getElementById('payBtn').disabled = false;
+  }
+});
+</script>
+
+
+Important: The STK prompt pops up on the user’s phone (Customer PhoneNumber must be correct and in 2547... format). Your server does the Daraja call — front-end just triggers it.
+
+3) Fleet search — diagnosis & fixes
+What I looked for (typical patterns)
+
+Your fleet form uses GET with name="search" and name="type".
+
+CarController@index should check $request->filled('search') and add ->where(...) clauses.
+
+Search works server-side; if you want client-side live filtering, you need JS.
+
+Why your search may appear to “do nothing”
+
+Form not submitting (button not type submit, JS preventing submit).
+
+Request parameters not received (wrong input name).
+
+Your DB has no matching records (e.g. you typed “SUV” but the type value in DB is “Sport Utility” or missing).
+
+Results rendering logic still shows unfiltered list because controller returns same view without applying filters.
+
+Server-side filter (good pattern)
+
+Use this in CarController@index:
+
+public function index(Request $request)
+{
+    $query = Car::query();
+
+    if ($request->filled('search')) {
+        $search = strtolower($request->search);
+        $query->where(function($q) use ($search) {
+            $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(brand) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(type) LIKE ?', ["%{$search}%"])
+              ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+        });
+    }
+
+    if ($request->filled('type')) {
+        $type = strtolower($request->type);
+        $query->whereRaw('LOWER(type) = ?', [$type]);
+    }
+
+    $cars = $query->paginate(12)->withQueryString();
+    return view('fleet.index', compact('cars'));
+}
+
+Debug tip:
+
+At the top of index(), add \Log::info('Fleet search request', $request->all()); to confirm the server sees the parameters.
+
+Client-side live filtering (optional) — one easy approach
+
+If you want the results to update as the user types without reloading:
+
+Make the index route respond with JSON if it’s an AJAX request.
+
+Use fetch/axios to request /fleet?search=... and repaint the list.
+
+Controller change for JSON:
+
+if ($request->wantsJson()) {
+    return response()->json([
+        'data' => $cars->items()
+    ]);
+}
+
+
+Basic JS:
+
+let timeout;
+document.querySelector('#searchInput').addEventListener('input', (e) => {
+  clearTimeout(timeout);
+  timeout = setTimeout(async () => {
+    const q = e.target.value;
+    const res = await fetch(`/fleet?search=${encodeURIComponent(q)}`, { headers: { 'Accept': 'application/json' }});
+    const json = await res.json();
+    // replace DOM with json.data
+  }, 350);
+});
+
+4) Payments vs Payouts — what they should be & how to fix confusion
+
+Payments: record of customer-initiated payments (incoming). Created when you call STK Push (status: pending), updated when callback arrives (status: paid/failed). Store CheckoutRequestID to match callback.
+
+Payouts: record of disbursements your system makes to third parties (via B2C API or other system). Different flow, different Safaricom endpoints.
+
+If your code writes STK push responses into payouts table (or vice versa), refactor:
+
+Find all places where you create records and ensure Payment::create(...) is used for inbound STK flows.
+
+Use migrations above if table structures are wrong.
+
+5) Logging & test suggestions (practical steps to prove fix)
+
+In checkout() add Log::info('STK request payload', $payload);
+
+In handleCallback() add Log::info('MPESA callback raw', $request->all());
+
+Trigger an STK push; inspect storage/logs/laravel.log.
+
+If you see STK response FAIL (no CheckoutRequestID) — copy the response JSON to Replit support.
+
+If STK response OK but callback never arrives:
+
+curl your MPESA_CALLBACK_URL from an external machine to ensure it is reachable.
+
+Use ngrok’s web UI (if using ngrok) or Replit’s logs to check incoming requests.
+
+When you ask Replit support, give them:
+
+the .env MPESA_CALLBACK_URL value,
+
+a sample CheckoutRequestID and timestamps from the logs,
+
+the STK request & response bodies.
+
+6) Checklist — apply in order (do these now)
+
+Decide which public endpoint you will use (replit domain or ngrok). Make sure it’s HTTPS.
+
+Set MPESA_CALLBACK_URL to that exact URL in .env (no trailing spaces).
+
+Update config/services.php to read that env var.
+
+Ensure PaymentController uses config('services.mpesa.callback_url').
+
+Add route POST /mpesa/callback and exclude it from CSRF.
+
+Add logging in checkout & callback so you can inspect storage/logs/laravel.log.
+
+Initiate STK push via the front-end POST /checkout code above.
+
+If callback doesn't arrive, curl the callback URL externally and show results to Replit support.
+
+7) Example messages to paste to Replit support (one you can copy)
+
+Hi Replit — my Laravel app at https://<my-replit>.replit.dev needs to receive external HTTPS POST requests from Safaricom Daraja at the callback path /mpesa/callback. Right now Safaricom reports BadRequest Invalid Callback URL. Please confirm:
+
+External POSTs to https://<my-replit>.replit.dev/mpesa/callback are allowed and forwarded to my container.
+
+The platform does not rewrite or redirect POSTs on that path.
+
+The TLS certificate on the domain is valid and accepted by external services.
+I can provide logs and example payloads (redacting secrets). Thanks.
+
+8) Final notes & things I cannot change for you
+
+If Replit’s free hosting blocks incoming external POSTs or rewrites headers, you’ll need either:
+
+an ngrok tunnel (HTTPS) while developing, or
+
+to host on a platform that supports public webhooks (Heroku, Railway, Render, Vercel with server functions, or a VPS).
+
+Make sure the MPESA_CALLBACK_URL you register in the Daraja portal exactly matches the one you include in the STK payload.
