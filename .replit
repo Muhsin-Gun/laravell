@@ -1,4 +1,4 @@
-modules = ["php-8.2", "web", "nodejs-20"]
+modules = ["php-8.2", "web", "nodejs-20", "postgresql-16"]
 [agent]
 expertMode = true
 
@@ -24,7 +24,6 @@ SESSION_LIFETIME = "120"
 APP_KEY = "base64:vUsIX20nkLtuGgzoxePf/luKMUhlrfL/y/+YVor/UWQ="
 MPESA_SHORTCODE = "174379"
 MPESA_ENV = "sandbox"
-MPESA_CALLBACK_URL = "https://d3f8b008-f0cf-40b8-b480-e503e064ec17-00-3gr3xd9okcesz.spock.replit.dev/payment/mpesa/callback"
 
 [workflows]
 runButton = "Project"
