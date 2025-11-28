@@ -58,18 +58,15 @@ The app uses Replit's PostgreSQL database. Key tables:
 ## Environment Variables Required
 ```
 DB_CONNECTION=pgsql
-DB_HOST=helium
-DB_PORT=5432
-DB_DATABASE=heliumdb
-DB_USERNAME=postgres
-DB_PASSWORD=password
+# Database is auto-configured via Replit PostgreSQL
 
 # M-Pesa Configuration (sandbox)
-MPESA_CONSUMER_KEY=your_consumer_key
-MPESA_CONSUMER_SECRET=your_consumer_secret
-MPESA_SHORTCODE=your_shortcode
-MPESA_PASSKEY=your_passkey
+MPESA_CONSUMER_KEY=your_consumer_key (stored as secret)
+MPESA_CONSUMER_SECRET=your_consumer_secret (stored as secret)
+MPESA_SHORTCODE=your_shortcode (stored as secret)
+MPESA_PASSKEY=your_passkey (stored as secret)
 MPESA_ENV=sandbox
+MPESA_CALLBACK_URL=https://your-app-url/payment/mpesa/callback
 ```
 
 ## Routes Overview
@@ -80,8 +77,16 @@ MPESA_ENV=sandbox
 - `/admin/dashboard` - Admin dashboard
 - `/employee/dashboard` - Employee dashboard
 - `/checkout/{booking}` - Payment checkout page
+- `/buy-car/{id}` - Direct car purchase test (sandbox only)
+- `/api/test-stk-push` - API endpoint for STK push testing (sandbox only)
 
 ## Recent Changes
+- Nov 28, 2025: **M-PESA STK PUSH FIXED** - Fixed callback URL configuration using config() instead of route() helper
+- Nov 28, 2025: Added CSRF exemption for M-Pesa callback route
+- Nov 28, 2025: Added MPESA_CALLBACK_URL to services.php config
+- Nov 28, 2025: Created public buy-car test routes (sandbox mode only)
+- Nov 28, 2025: Added API test endpoint /api/test-stk-push (sandbox mode only)
+- Nov 28, 2025: Successfully tested STK Push to +254793027220
 - Nov 27, 2025: **CRITICAL FIX** - Removed conflicting route files (car-rental.php, web_car_rental.php) and CarRentalController that were showing placeholder data instead of real cars
 - Nov 27, 2025: Set up PostgreSQL database on Replit and ran migrations/seeders
 - Nov 27, 2025: Copied car images to storage/app/public/cars/ and created storage symlink
