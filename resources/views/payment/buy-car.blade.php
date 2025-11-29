@@ -14,7 +14,7 @@
             </div>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 @if($car->image_path)
-                <img src="{{ asset($car->image_path) }}" alt="{{ $car->name }}" class="w-full h-64 object-cover">
+                <img src="{{ asset('storage/' . $car->image_path) }}" alt="{{ $car->name }}" class="w-full h-64 object-cover">
                 @else
                 <div class="w-full h-64 bg-gray-300 flex items-center justify-center">
                     <span class="text-gray-500">No Image Available</span>
