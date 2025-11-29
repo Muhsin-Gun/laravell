@@ -80,7 +80,46 @@ MPESA_CALLBACK_URL=https://your-app-url/payment/mpesa/callback
 - `/buy-car/{id}` - Direct car purchase test (sandbox only)
 - `/api/test-stk-push` - API endpoint for STK push testing (sandbox only)
 
+## Setup Instructions (From Scratch)
+Follow these steps to set up the project locally or on a fresh Replit environment:
+
+### Step 1: Install PHP Dependencies
+```bash
+composer install
+```
+
+### Step 2: Run Database Migrations
+```bash
+php artisan migrate
+```
+
+### Step 3: Create Storage Symbolic Link (for image uploads)
+```bash
+php artisan storage:link
+```
+
+### Step 4: Clear Caches
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+### Step 5: Start the Server
+```bash
+php artisan serve --host=0.0.0.0 --port=5000
+```
+
+### Step 6: (Optional) Seed Database with Test Data
+```bash
+php artisan db:seed
+```
+
 ## Recent Changes
+- Nov 29, 2025: **IMPORT FIX** - Fixed syntax error in AuthenticatedSessionController.php (stray period)
+- Nov 29, 2025: Fixed M-Pesa callback URL from `/mpesa/callback` to `/payment/mpesa/callback`
+- Nov 29, 2025: Installed Laravel IDE Helper for better type support
+- Nov 29, 2025: Ran fresh migrations on PostgreSQL database
+- Nov 29, 2025: Created storage symlink for image uploads
 - Nov 28, 2025: **M-PESA STK PUSH FIXED** - Fixed callback URL configuration using config() instead of route() helper
 - Nov 28, 2025: Added CSRF exemption for M-Pesa callback route
 - Nov 28, 2025: Added MPESA_CALLBACK_URL to services.php config
