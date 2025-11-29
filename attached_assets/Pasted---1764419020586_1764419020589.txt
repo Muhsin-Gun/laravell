@@ -1,0 +1,804 @@
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   app\Console\Commands\BrandingPreview.php
+ ------ --------------------------------------------------------------------------------------
+  :13    Method App\Console\Commands\BrandingPreview::handle() has no return type specified.
+  :26    Part $connection (mixed) of encapsed string cannot be cast to string.
+  :61    Access to an undefined property object::$content.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :61    Access to an undefined property object::$description.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :61    Access to an undefined property object::$id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :61    Access to an undefined property object::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :61    Access to an undefined property object::$title.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :61    Access to an undefined property object::$value.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :62    Access to an undefined property object::$id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+ ------ --------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------
+  Line   app\Console\Commands\MakeAdmin.php
+ ------ -----------------------------------------------------------------------------------
+  :13    Method App\Console\Commands\MakeAdmin::handle() has no return type specified.
+  :16    Call to an undefined static method App\Models\User::where().
+  :18    Part $email (array|bool|string|null) of encapsed string cannot be cast to string.
+  :25    Part $email (array|bool|string|null) of encapsed string cannot be cast to string.
+ ------ -----------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\AboutController.php
+ ------ ------------------------------------------------------------------------------------
+  :9     Method App\Http\Controllers\AboutController::index() has no return type specified.
+ ------ ------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Admin\BlogController.php
+ ------ ------------------------------------------------------------------------------------------------------ 
+  :11    Method App\Http\Controllers\Admin\BlogController::index() has no return type specified.
+  :13    Call to an undefined static method App\Models\Blog::latest().
+  :17    Method App\Http\Controllers\Admin\BlogController::create() has no return type specified.
+  :22    Method App\Http\Controllers\Admin\BlogController::store() has no return type specified.
+  :29    Call to an undefined static method App\Models\Blog::create().
+  :30    Access to an undefined property Illuminate\Http\Request::$title.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :31    Access to protected property Illuminate\Http\Request::$content.
+  :32    Call to an undefined method Illuminate\Contracts\Auth\Factory|Illuminate\Contracts\Auth\Guard::id().
+  :35    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :38    Method App\Http\Controllers\Admin\BlogController::edit() has no return type specified.
+  :43    Method App\Http\Controllers\Admin\BlogController::update() has no return type specified.
+  :51    Access to an undefined property Illuminate\Http\Request::$title.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :52    Access to protected property Illuminate\Http\Request::$content.
+  :55    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :58    Method App\Http\Controllers\Admin\BlogController::destroy() has no return type specified.
+  :61    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Admin\CarController.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :11    Method App\Http\Controllers\Admin\CarController::index() has no return type specified.
+  :17    Method App\Http\Controllers\Admin\CarController::create() has no return type specified.
+  :22    Method App\Http\Controllers\Admin\CarController::store() has no return type specified.
+  :32    Cannot call method store() on array<Illuminate\Http\UploadedFile>|Illuminate\Http\UploadedFile|null.
+  :34    Call to an undefined static method App\Models\Car::create().
+  :35    Access to an undefined property Illuminate\Http\Request::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :36    Access to an undefined property Illuminate\Http\Request::$brand.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :37    Access to an undefined property Illuminate\Http\Request::$type.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :38    Access to an undefined property Illuminate\Http\Request::$description.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :39    Access to an undefined property Illuminate\Http\Request::$price_per_day.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :44    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :47    Method App\Http\Controllers\Admin\CarController::edit() has no return type specified.
+  :52    Method App\Http\Controllers\Admin\CarController::update() has no return type specified.
+  :66    Cannot call method store() on array<Illuminate\Http\UploadedFile>|Illuminate\Http\UploadedFile|null.
+  :67    Access to an undefined property App\Models\Car::$image_path.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :71    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :74    Method App\Http\Controllers\Admin\CarController::destroy() has no return type specified.
+  :77    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Admin\EditController.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :12    Method App\Http\Controllers\Admin\EditController::edit() has no return type specified.
+  :12    Method App\Http\Controllers\Admin\EditController::edit() has parameter $id with no type specified.
+  :14    Call to an undefined static method App\Models\User::findOrFail().
+  :19    Method App\Http\Controllers\Admin\EditController::update() has no return type specified.
+  :19    Method App\Http\Controllers\Admin\EditController::update() has parameter $id with no type specified.
+  :27    Call to an undefined static method App\Models\User::findOrFail().
+  :30    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ --------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Admin\ReportsController.php
+ ------ --------------------------------------------------------------------------------------------------------------
+  :15    Method App\Http\Controllers\Admin\ReportsController::index() has no return type specified.
+  :41    Call to an undefined static method App\Models\Payment::where().
+  :48    Call to an undefined static method App\Models\Car::withCount().
+  :61    Method App\Http\Controllers\Admin\ReportsController::export() has no return type specified.
+  :83    Cannot access property $transaction_id on mixed.
+  :84    Cannot access property $created_at on mixed.
+  :85    Cannot access property $booking on mixed.
+  :86    Cannot access property $booking on mixed.
+  :87    Cannot access property $amount on mixed.
+  :88    Cannot access property $status on mixed.
+  :89    Cannot access property $payment_method on mixed.
+  :93    Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::header().
+ ------ --------------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------ 
+  Line   app\Http\Controllers\Admin\UserController.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :11    Method App\Http\Controllers\Admin\UserController::index() has no return type specified.
+  :17    Method App\Http\Controllers\Admin\UserController::edit() has no return type specified.
+  :22    Method App\Http\Controllers\Admin\UserController::update() has no return type specified.
+  :25    Access to an undefined property App\Models\User::$role.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :25    Access to an undefined property Illuminate\Http\Request::$role.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :27    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :30    Method App\Http\Controllers\Admin\UserController::destroy() has no return type specified.
+  :33    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Api\BlogController.php
+ ------ -----------------------------------------------------------------------------------------
+  :13    Method App\Http\Controllers\Api\BlogController::index() has no return type specified.
+  :21    Method App\Http\Controllers\Api\BlogController::store() has no return type specified.
+  :29    Method App\Http\Controllers\Api\BlogController::show() has no return type specified.
+  :37    Method App\Http\Controllers\Api\BlogController::update() has no return type specified.
+  :45    Method App\Http\Controllers\Api\BlogController::destroy() has no return type specified.
+ ------ -----------------------------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\AuthenticatedSessionController.php
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------
+  :20    Method App\Http\Controllers\Auth\AuthenticatedSessionController::create() should return Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View.
+  :32    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::intended().
+  :40    Call to an undefined method Illuminate\Contracts\Auth\Guard::logout().
+  :46    Method App\Http\Controllers\Auth\AuthenticatedSessionController::destroy() should return Illuminate\Http\RedirectResponse but returns
+         Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector.
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\ConfirmablePasswordController.php
+ ------ -----------------------------------------------------------------------------------------------------------------------
+  :20    Method App\Http\Controllers\Auth\ConfirmablePasswordController::show() should return Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View.
+  :29    Cannot access property $email on mixed.
+  :30    Access to an undefined property Illuminate\Http\Request::$password.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :39    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::intended().
+ ------ -----------------------------------------------------------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\EmailVerificationNotificationController.php
+ ------ ---------------------------------------------------------------------------------------------------------
+  :17    Cannot call method hasVerifiedEmail() on mixed.
+  :18    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::intended().
+  :21    Cannot call method sendEmailVerificationNotification() on mixed.
+ ------ ---------------------------------------------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\EmailVerificationPromptController.php
+ ------ ---------------------------------------------------------------------------------------------------------
+  :18    Cannot call method hasVerifiedEmail() on mixed.
+  :18    Method App\Http\Controllers\Auth\EmailVerificationPromptController::__invoke() should return
+         Illuminate\Http\RedirectResponse|Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View|Illuminate\Http\RedirectResponse.
+  :19    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::intended().
+ ------ ---------------------------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\NewPasswordController.php
+ ------ -----------------------------------------------------------------------------------------------------------------
+  :22    Method App\Http\Controllers\Auth\NewPasswordController::create() should return Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View.
+  :45    Access to an undefined property Illuminate\Http\Request::$password.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :57    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :57    Parameter #1 $key of function __ expects string|null, mixed given.
+  :59    Parameter #1 $key of function __ expects string|null, mixed given.
+ ------ -----------------------------------------------------------------------------------------------------------------
+
+ ------ --------------------------------------------------
+  Line   app\Http\Controllers\Auth\PasswordController.php
+ ------ --------------------------------------------------
+  :23    Cannot call method update() on mixed.
+ ------ --------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\PasswordResetLinkController.php
+ ------ -----------------------------------------------------------------------------------------------------------------------
+  :18    Method App\Http\Controllers\Auth\PasswordResetLinkController::create() should return Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View.
+ ------ -----------------------------------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\RegisteredUserController.php
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  :23    Method App\Http\Controllers\Auth\RegisteredUserController::create() should return Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View.
+  :39    Call to an undefined static method App\Models\User::create().
+  :40    Access to an undefined property Illuminate\Http\Request::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :41    Access to an undefined property Illuminate\Http\Request::$email.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :42    Access to an undefined property Illuminate\Http\Request::$password.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :49    Method App\Http\Controllers\Auth\RegisteredUserController::store() should return Illuminate\Http\RedirectResponse but returns
+         Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector.
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\Auth\VerifyEmailController.php
+ ------ -----------------------------------------------------------------------------------------------------------------------------------------
+  :18    Cannot call method hasVerifiedEmail() on mixed.
+  :19    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::intended().
+  :22    Cannot call method markEmailAsVerified() on mixed.
+  :23    Parameter #1 $user of class Illuminate\Auth\Events\Verified constructor expects Illuminate\Contracts\Auth\MustVerifyEmail, mixed given.
+  :26    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::intended().
+ ------ -----------------------------------------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\BlogController.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :15    Method App\Http\Controllers\BlogController::showBlogsPage() has no return type specified.
+  :17    Call to an undefined static method App\Models\Blog::latest().
+  :22    Method App\Http\Controllers\BlogController::showSingleBlog() has no return type specified.
+  :32    Method App\Http\Controllers\BlogController::index() has no return type specified.
+  :34    Call to an undefined static method App\Models\Blog::latest().
+  :39    Method App\Http\Controllers\BlogController::create() has no return type specified.
+  :45    Method App\Http\Controllers\BlogController::store() has no return type specified.
+  :53    Call to an undefined static method App\Models\Blog::create().
+  :55    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :59    Method App\Http\Controllers\BlogController::edit() has no return type specified.
+  :65    Method App\Http\Controllers\BlogController::update() has no return type specified.
+  :75    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :79    Method App\Http\Controllers\BlogController::destroy() has no return type specified.
+  :82    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\BookingController.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :12    Method App\Http\Controllers\BookingController::store() has no return type specified.
+  :19    Access to an undefined property Illuminate\Http\Request::$start_date.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :20    Access to an undefined property Illuminate\Http\Request::$end_date.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :27    Access to an undefined property App\Models\Car::$price_per_day.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :29    Call to an undefined static method App\Models\Booking::create().
+  :31    Access to an undefined property App\Models\Car::$id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :32    Access to an undefined property Illuminate\Http\Request::$start_date.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :33    Access to an undefined property Illuminate\Http\Request::$end_date.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :38    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :41    Method App\Http\Controllers\BookingController::index() has no return type specified.
+  :43    Call to an undefined static method App\Models\Booking::where().
+  :51    Method App\Http\Controllers\BookingController::show() has no return type specified.
+  :53    Access to an undefined property App\Models\Booking::$user_id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :61    Method App\Http\Controllers\BookingController::employeeIndex() has no return type specified.
+  :70    Method App\Http\Controllers\BookingController::checkout() has no return type specified.
+  :72    Access to an undefined property App\Models\Booking::$user_id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\CarController.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :10    Method App\Http\Controllers\CarController::index() has no return type specified.
+  :16    Access to an undefined property Illuminate\Http\Request::$search.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :27    Access to an undefined property Illuminate\Http\Request::$type.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :32    Access to an undefined property Illuminate\Http\Request::$price_max.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :37    Access to an undefined property Illuminate\Http\Request::$sort.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :58    Method App\Http\Controllers\CarController::show() has no return type specified.
+  :63    Method App\Http\Controllers\CarController::store() has no return type specified.
+  :71    Access to an undefined property App\Models\Car::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :71    Access to an undefined property Illuminate\Http\Request::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :76    Cannot call method store() on array<Illuminate\Http\UploadedFile>|Illuminate\Http\UploadedFile|null.
+  :77    Access to an undefined property App\Models\Car::$image_path.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :81    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   app\Http\Controllers\ContactController.php
+ ------ --------------------------------------------------------------------------------------
+  :9     Method App\Http\Controllers\ContactController::index() has no return type specified.
+ ------ --------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\DashboardController.php
+ ------ -------------------------------------------------------------------------------------------
+  :13    Method App\Http\Controllers\DashboardController::client() has no return type specified.
+  :18    Cannot call method bookings() on Illuminate\Contracts\Auth\Authenticatable|null.
+  :19    Cannot call method bookings() on Illuminate\Contracts\Auth\Authenticatable|null.
+  :20    Cannot call method bookings() on Illuminate\Contracts\Auth\Authenticatable|null.
+  :21    Cannot call method bookings() on Illuminate\Contracts\Auth\Authenticatable|null.
+  :24    Cannot call method bookings() on Illuminate\Contracts\Auth\Authenticatable|null.
+  :33    Method App\Http\Controllers\DashboardController::admin() has no return type specified.
+  :36    Call to an undefined static method App\Models\User::count().
+  :37    Call to an undefined static method App\Models\Car::count().
+  :38    Call to an undefined static method App\Models\Booking::count().
+  :39    Call to an undefined static method App\Models\Payment::where().
+  :50    Method App\Http\Controllers\DashboardController::employee() has no return type specified.
+  :53    Call to an undefined static method App\Models\Booking::where().
+  :54    Call to an undefined static method App\Models\Booking::where().
+  :55    Call to an undefined static method App\Models\Booking::where().
+  :58    Call to an undefined static method App\Models\Booking::where().
+ ------ -------------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\EmployeeController.php
+ ------ -----------------------------------------------------------------------------------------
+  :11    Method App\Http\Controllers\EmployeeController::approve() has no return type specified.
+  :17    Access to an undefined property Illuminate\Http\Request::$action.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :18    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :20    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :22    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :29    Access to an undefined property App\Models\Booking::$user_id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :32    Access to an undefined property App\Models\Booking::$id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :33    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :40    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+ ------ -----------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------
+  Line   app\Http\Controllers\HomeController.php
+ ------ -----------------------------------------------------------------------------------
+  :10    Method App\Http\Controllers\HomeController::index() has no return type specified.
+  :12    Call to an undefined static method App\Models\Car::where().
+ ------ -----------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\PaymentController.php
+ ------ -----------------------------------------------------------------------------------------------------------------
+  :18    Property App\Http\Controllers\PaymentController::$consumer_key has no type specified.
+  :19    Property App\Http\Controllers\PaymentController::$consumer_secret has no type specified.
+  :20    Property App\Http\Controllers\PaymentController::$passkey has no type specified.
+  :21    Property App\Http\Controllers\PaymentController::$shortcode has no type specified.
+  :22    Property App\Http\Controllers\PaymentController::$callback_url has no type specified.
+  :23    Property App\Http\Controllers\PaymentController::$environment has no type specified.
+  :38    Method App\Http\Controllers\PaymentController::initialize() has no return type specified.
+  :45    Access to an undefined property Illuminate\Http\Request::$booking_id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :45    Call to an undefined static method App\Models\Booking::findOrFail().
+  :48    Call to an undefined method Illuminate\Contracts\Auth\Factory|Illuminate\Contracts\Auth\Guard::id().
+  :49    Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :59    Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :68    Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :88    Access to an undefined property Illuminate\Http\Request::$phone_number.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :90    Access to an undefined property Illuminate\Http\Request::$phone_number.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :103   Cannot access offset 'ResponseCode' on mixed.
+  :105   Call to an undefined static method App\Models\Payment::create().
+  :107   Cannot access offset 'CheckoutRequestID' on mixed.
+  :108   Cannot access offset 'MerchantRequestID' on mixed.
+  :109   Access to an undefined property Illuminate\Http\Request::$phone_number.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :113   Cannot access offset 'ResponseDescription' on mixed.
+  :116   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :119   Cannot access offset 'CheckoutRequestID' on mixed.
+  :125   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :127   Cannot access offset 'errorMessage' on mixed.
+  :133   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :143   Method App\Http\Controllers\PaymentController::callback() has no return type specified.
+  :154   Call to an undefined static method App\Models\Payment::where().
+  :158   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :211   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :218   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :228   Method App\Http\Controllers\PaymentController::getAccessToken() has no return type specified.
+  :239   Cannot access offset 'access_token' on mixed.
+  :254   Method App\Http\Controllers\PaymentController::testStkPush() has no return type specified.
+  :262   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :299   Cannot access offset 'ResponseCode' on mixed.
+  :300   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :307   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :309   Cannot access offset 'errorMessage' on mixed.
+  :315   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :325   Method App\Http\Controllers\PaymentController::checkStatus() has no return type specified.
+  :328   Access to an undefined property App\Models\Booking::$user_id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :328   Call to an undefined method Illuminate\Contracts\Auth\Factory|Illuminate\Contracts\Auth\Guard::id().
+  :329   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :335   Call to an undefined method Illuminate\Database\Eloquent\Relations\HasOne::latest().
+  :338   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :344   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :355   Method App\Http\Controllers\PaymentController::showBuyForm() has no return type specified.
+  :363   Method App\Http\Controllers\PaymentController::buyCarDirect() has no return type specified.
+  :370   Access to an undefined property Illuminate\Http\Request::$phone_number.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :377   Access to an undefined property App\Models\Car::$price_per_day.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :379   Access to an undefined property App\Models\Car::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :409   Access to an undefined property App\Models\Car::$id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :410   Access to an undefined property App\Models\Car::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :424   Cannot access offset 'ResponseCode' on mixed.
+  :426   Call to an undefined method Illuminate\Contracts\Auth\Factory|Illuminate\Contracts\Auth\Guard::user().
+  :428   Call to an undefined static method App\Models\User::firstOrCreate().
+  :439   Call to an undefined static method App\Models\Booking::create().
+  :441   Access to an undefined property App\Models\Car::$id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :450   Call to an undefined static method App\Models\Payment::create().
+  :452   Cannot access offset 'CheckoutRequestID' on mixed.
+  :453   Cannot access offset 'MerchantRequestID' on mixed.
+  :458   Cannot access offset 'ResponseDescription' on mixed.
+  :464   Cannot access offset 'ResponseDescription' on mixed.
+  :464   Cannot access offset 'errorMessage' on mixed.
+  :478   Method App\Http\Controllers\PaymentController::formatPhoneNumber() has no return type specified.
+  :478   Method App\Http\Controllers\PaymentController::formatPhoneNumber() has parameter $phone with no type specified.
+  :504   Method App\Http\Controllers\PaymentController::apiTestStkPush() has no return type specified.
+  :512   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :525   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :570   Cannot access offset 'ResponseCode' on mixed.
+  :571   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :579   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+  :581   Cannot access offset 'ResponseDescription' on mixed.
+  :581   Cannot access offset 'errorMessage' on mixed.
+  :588   Call to an undefined method Illuminate\Contracts\Routing\ResponseFactory|Illuminate\Http\Response::json().
+ ------ -----------------------------------------------------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\ProductController.php
+ ------ ----------------------------------------------------------------------------------------
+  :12    Method App\Http\Controllers\ProductController::index() has no return type specified.
+  :20    Method App\Http\Controllers\ProductController::create() has no return type specified.
+  :28    Method App\Http\Controllers\ProductController::store() has no return type specified.
+  :36    Method App\Http\Controllers\ProductController::show() has no return type specified.
+  :44    Method App\Http\Controllers\ProductController::edit() has no return type specified.
+  :52    Method App\Http\Controllers\ProductController::update() has no return type specified.
+  :60    Method App\Http\Controllers\ProductController::destroy() has no return type specified.  
+ ------ ----------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Controllers\ProfileController.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :12    Method App\Http\Controllers\ProfileController::showLoginForm() has no return type specified.
+  :17    Method App\Http\Controllers\ProfileController::login() has no return type specified.
+  :25    Cannot access property $role on Illuminate\Contracts\Auth\Authenticatable|null.
+  :27    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::back().
+  :30    Cannot access property $role on Illuminate\Contracts\Auth\Authenticatable|null.
+  :31    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :32    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :33    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :37    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::back().
+  :40    Method App\Http\Controllers\ProfileController::showRegisterForm() has no return type specified.
+  :48    Method App\Http\Controllers\ProfileController::register() has no return type specified.
+  :60    Call to an undefined static method App\Models\User::create().
+  :61    Access to an undefined property Illuminate\Http\Request::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :62    Access to an undefined property Illuminate\Http\Request::$email.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :63    Access to an undefined property Illuminate\Http\Request::$password.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :64    Access to an undefined property Illuminate\Http\Request::$role.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :71    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :74    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :77    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :80    Method App\Http\Controllers\ProfileController::logout() has no return type specified.
+  :83    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :86    Method App\Http\Controllers\ProfileController::show() has no return type specified.
+  :92    Method App\Http\Controllers\ProfileController::update() has no return type specified.
+  :100   Cannot call method update() on Illuminate\Contracts\Auth\Authenticatable|null.
+  :103   Cannot call method store() on array<Illuminate\Http\UploadedFile>|Illuminate\Http\UploadedFile|null.
+  :104   Cannot access property $avatar_path on Illuminate\Contracts\Auth\Authenticatable|null.
+  :105   Cannot call method save() on Illuminate\Contracts\Auth\Authenticatable|null.
+  :108   Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::back().
+ ------ ------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------
+  Line   app\Http\Middleware\EnsureRole.php
+ ------ ------------------------------------------------------------------------------------------------------
+  :11    Method App\Http\Middleware\EnsureRole::handle() has no return type specified.
+  :11    Method App\Http\Middleware\EnsureRole::handle() has parameter $role with no type specified.
+  :14    Call to an undefined method Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector::route().
+  :17    Cannot access property $role on Illuminate\Contracts\Auth\Authenticatable|null.
+ ------ ------------------------------------------------------------------------------------------------------ 
+
+ ------ ----------------------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Middleware\RedirectIfAuthenticated.php
+ ------ ----------------------------------------------------------------------------------------------------------------------------------
+  :24    Method App\Http\Middleware\RedirectIfAuthenticated::handle() should return Symfony\Component\HttpFoundation\Response but returns
+         Illuminate\Http\RedirectResponse|Illuminate\Routing\Redirector.
+ ------ ----------------------------------------------------------------------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Requests\Auth\LoginRequest.php
+ ------ ---------------------------------------------------------------------------------------------------------------------
+  :27    Method App\Http\Requests\Auth\LoginRequest::rules() return type has no value type specified in iterable type array.
+         💡 See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type
+ ------ ---------------------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------------------------
+  Line   app\Http\Requests\ProfileUpdateRequest.php
+ ------ ------------------------------------------------------------------------------------------------------------------------
+  :16    Method App\Http\Requests\ProfileUpdateRequest::rules() return type has no value type specified in iterable type array.
+         💡 See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type
+  :20    Cannot access property $id on mixed.
+ ------ ------------------------------------------------------------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------------------------------
+  Line   app\Models\Booking.php
+ ------ ----------------------------------------------------------------------------------------------
+  :24    Property App\Models\Booking::$casts type has no value type specified in iterable type array.
+         💡 See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type
+  :75    Access to an undefined property App\Models\Booking::$payment_status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :80    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :85    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :90    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :95    Access to an undefined property App\Models\Booking::$status.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+ ------ ----------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------
+  Line   app\Models\Car.php
+ ------ -------------------------------------------------------------------------------------------
+  :20    Property App\Models\Car::$casts type has no value type specified in iterable type array.   
+         💡 See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type
+  :25    Method App\Models\Car::bookings() has no return type specified.
+  :30    Method App\Models\Car::reviews() has no return type specified.
+  :39    Method App\Models\Car::getMakeAttribute() has no return type specified.
+  :48    Method App\Models\Car::getModelAttribute() has no return type specified.
+  :57    Method App\Models\Car::getImageAttribute() has no return type specified.
+  :66    Method App\Models\Car::getPriceAttribute() has no return type specified.
+ ------ -------------------------------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------------------------------
+  Line   app\Models\Message.php
+ ------ ----------------------------------------------------------------------------------------------
+  :16    Property App\Models\Message::$casts type has no value type specified in iterable type array.
+         💡 See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type
+  :20    Method App\Models\Message::sender() has no return type specified.
+  :25    Method App\Models\Message::booking() has no return type specified.
+ ------ ----------------------------------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------------------------------
+  Line   app\Models\Payment.php
+ ------ ----------------------------------------------------------------------------------------------
+  :23    Property App\Models\Payment::$casts type has no value type specified in iterable type array.
+         💡 See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type
+ ------ ----------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------
+  Line   app\Models\Review.php
+ ------ -------------------------------------------------------------------
+  :17    Method App\Models\Review::user() has no return type specified.
+  :22    Method App\Models\Review::car() has no return type specified.
+  :27    Method App\Models\Review::booking() has no return type specified.
+ ------ -------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------
+  Line   app\Models\User.php
+ ------ ------------------------------------------------------------------
+  :48    Method App\Models\User::bookings() has no return type specified.
+  :53    Method App\Models\User::reviews() has no return type specified.
+  :58    Method App\Models\User::messages() has no return type specified.
+ ------ ------------------------------------------------------------------
+
+ ------ ----------------------------------------
+  Line   app\Providers\RouteServiceProvider.php
+ ------ ----------------------------------------
+  :45    Cannot access property $id on mixed.
+ ------ ----------------------------------------
+
+ ------ ----------------------------------------------------------------------------------------------------
+  Line   app\Services\MPesaService.php
+ ------ ----------------------------------------------------------------------------------------------------
+  :9     Property App\Services\MPesaService::$consumerKey has no type specified.
+  :10    Property App\Services\MPesaService::$consumerSecret has no type specified.
+  :11    Property App\Services\MPesaService::$shortcode has no type specified.
+  :12    Property App\Services\MPesaService::$passkey has no type specified.
+  :13    Property App\Services\MPesaService::$env has no type specified.
+  :24    Method App\Services\MPesaService::generateToken() has no return type specified.
+  :33    Cannot access offset 'access_token' on mixed.
+  :39    Method App\Services\MPesaService::stkPush() has no return type specified.
+  :39    Method App\Services\MPesaService::stkPush() has parameter $accountRef with no type specified.
+  :39    Method App\Services\MPesaService::stkPush() has parameter $amount with no type specified.
+  :39    Method App\Services\MPesaService::stkPush() has parameter $callbackUrl with no type specified.
+  :39    Method App\Services\MPesaService::stkPush() has parameter $phone with no type specified.
+  :39    Method App\Services\MPesaService::stkPush() has parameter $transactionDesc with no type specified.
+ ------ ----------------------------------------------------------------------------------------------------
+
+ ------ -----------------------------------------------------------------------------------------------
+  Line   app\View\Components\AppLayout.php
+ ------ -----------------------------------------------------------------------------------------------
+  :15    Method App\View\Components\AppLayout::render() should return Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View.
+ ------ -----------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------- 
+  Line   app\View\Components\GuestLayout.php
+ ------ -------------------------------------------------------------------------------------------------
+  :15    Method App\View\Components\GuestLayout::render() should return Illuminate\View\View but returns
+         Illuminate\Contracts\View\Factory|Illuminate\Contracts\View\View.
+ ------ -------------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------
+  Line   database\factories\BlogFactory.php
+ ------ -------------------------------------------------------------
+  :17    Call to an undefined method Faker\Generator::catchPhrase().
+ ------ -------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------------------------------------------------------------  
+  Line   database\factories\PostFactory.php
+ ------ -------------------------------------------------------------------------------------------------------------------------------------------------  
+  :10    PHPDoc tag @extends has invalid type App\Models\Model.
+  :10    Type App\Models\Model in generic type Illuminate\Database\Eloquent\Factories\Factory<App\Models\Model> in PHPDoc tag @extends is not subtype of   
+         template type TModel of Illuminate\Database\Eloquent\Model of class Illuminate\Database\Eloquent\Factories\Factory.
+ ------ -------------------------------------------------------------------------------------------------------------------------------------------------  
+
+ ------ ---------------------------------------------------------------------------------------------------------------------
+  Line   database\factories\UserFactory.php
+ ------ ---------------------------------------------------------------------------------------------------------------------
+  :36    Method Database\Factories\UserFactory::unverified() should return $this(Database\Factories\UserFactory) but returns
+         static(Database\Factories\UserFactory).
+ ------ ---------------------------------------------------------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000001_create_cars_table.php
+ ------ ----------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000001_create_cars_table.php:7::up() has no return type specified.
+  :25    Method class@anonymous/database/migrations/2025_01_01_000001_create_cars_table.php:7::down() has no return type specified.
+ ------ ----------------------------------------------------------------------------------------------------------------------------
+
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000002_create_bookings_table.php
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000002_create_bookings_table.php:7::up() has no return type specified.
+  :25    Method class@anonymous/database/migrations/2025_01_01_000002_create_bookings_table.php:7::down() has no return type specified.
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000003_create_reviews_table.php
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000003_create_reviews_table.php:7::up() has no return type specified.
+  :22    Method class@anonymous/database/migrations/2025_01_01_000003_create_reviews_table.php:7::down() has no return type specified.
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000004_create_messages_table.php
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000004_create_messages_table.php:7::up() has no return type specified.
+  :21    Method class@anonymous/database/migrations/2025_01_01_000004_create_messages_table.php:7::down() has no return type specified.
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000005_create_notifications_table.php
+ ------ ------------------------------------------------------------------------------------------------------------------------------------- 
+  :9     Method class@anonymous/database/migrations/2025_01_01_000005_create_notifications_table.php:7::up() has no return type specified.
+  :21    Method class@anonymous/database/migrations/2025_01_01_000005_create_notifications_table.php:7::down() has no return type specified.
+ ------ -------------------------------------------------------------------------------------------------------------------------------------
+
+ ------ ----------------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000006_add_role_and_loyalty_to_users.php
+ ------ ----------------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000006_add_role_and_loyalty_to_users.php:7::up() has no return type specified.
+  :20    Method class@anonymous/database/migrations/2025_01_01_000006_add_role_and_loyalty_to_users.php:7::down() has no return type specified.
+ ------ ----------------------------------------------------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000007_create_payouts_table.php
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000007_create_payouts_table.php:7::up() has no return type specified.
+  :20    Method class@anonymous/database/migrations/2025_01_01_000007_create_payouts_table.php:7::down() has no return type specified.
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000008_create_widgets_table.php
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000008_create_widgets_table.php:7::up() has no return type specified.
+  :20    Method class@anonymous/database/migrations/2025_01_01_000008_create_widgets_table.php:7::down() has no return type specified.
+ ------ -------------------------------------------------------------------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_01_01_000009_create_loyalty_credits_table.php
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_01_01_000009_create_loyalty_credits_table.php:7::up() has no return type specified.
+  :19    Method class@anonymous/database/migrations/2025_01_01_000009_create_loyalty_credits_table.php:7::down() has no return type specified.
+ ------ ---------------------------------------------------------------------------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------------------------------------------
+  Line   database\migrations\2025_11_18_105852_create_blogs_table.php
+ ------ ---------------------------------------------------------------------------------------------------------
+  :1     File begins with UTF-8 BOM character. This may cause problems when running the code in the web browser.
+ ------ ---------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------------------------------------------------------------------------   
+  Line   database\migrations\2025_11_25_000001_branding_preview_and_optional_apply.php
+ ------ ------------------------------------------------------------------------------------------------------------------------------------------------   
+  :16    Method class@anonymous/database/migrations/2025_11_25_000001_branding_preview_and_optional_apply.php:6::up() has no return type specified.        
+  :65    Access to an undefined property object::$content.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :65    Access to an undefined property object::$description.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :65    Access to an undefined property object::$name.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :65    Access to an undefined property object::$title.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :65    Access to an undefined property object::$value.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :66    Access to an undefined property object::$id.
+         💡 Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property
+  :78    Method class@anonymous/database/migrations/2025_11_25_000001_branding_preview_and_optional_apply.php:6::down() has no return type specified.      
+  :83    Method class@anonymous/database/migrations/2025_11_25_000001_branding_preview_and_optional_apply.php:6::printLine() has no return type
+         specified.
+  :83    Method class@anonymous/database/migrations/2025_11_25_000001_branding_preview_and_optional_apply.php:6::printLine() has parameter $msg with no    
+         type specified.
+ ------ ------------------------------------------------------------------------------------------------------------------------------------------------   
+
+ ------ -------------------------------------------------------------------------------------------------------------------------------- 
+  Line   database\migrations\2025_11_25_152500_create_payments_table.php
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+  :9     Method class@anonymous/database/migrations/2025_11_25_152500_create_payments_table.php:7::up() has no return type specified.
+  :27    Method class@anonymous/database/migrations/2025_11_25_152500_create_payments_table.php:7::down() has no return type specified.
+ ------ --------------------------------------------------------------------------------------------------------------------------------
+
+ ------ ------------------------------------------------------------------------------
+  Line   database\seeders\AdminUserSeeder.php
+ ------ ------------------------------------------------------------------------------
+  :11    Method Database\Seeders\AdminUserSeeder::run() has no return type specified.
+  :13    Call to an undefined static method App\Models\User::firstOrCreate().
+  :22    Call to an undefined static method App\Models\User::firstOrCreate().
+  :31    Call to an undefined static method App\Models\User::firstOrCreate().
+ ------ ------------------------------------------------------------------------------
+
+ ------ ---------------------------------------------------------------------
+  Line   database\seeders\CarSeeder.php
+ ------ ---------------------------------------------------------------------
+  :14    Call to an undefined static method App\Models\User::where().
+  :101   Call to an undefined static method App\Models\Car::firstOrCreate().
+  :111   Call to an undefined static method App\Models\Review::create().
+ ------ ---------------------------------------------------------------------
+
+ ------ --------------------------------------------------------------------------------
+  Line   database\seeders\InitialDataSeeder.php
+ ------ --------------------------------------------------------------------------------
+  :12    Method Database\Seeders\InitialDataSeeder::run() has no return type specified.
+  :15    Call to an undefined static method App\Models\User::create().
+  :24    Call to an undefined static method App\Models\User::create().
+  :33    Call to an undefined static method App\Models\User::create().
+  :42    Call to an undefined static method App\Models\Car::create().
+  :52    Call to an undefined static method App\Models\Car::create().
+  :62    Call to an undefined static method App\Models\Car::create().
+  :72    Call to an undefined static method App\Models\Car::create().
+  :82    Call to an undefined static method App\Models\Car::create().
+ ------ --------------------------------------------------------------------------------
+
+ ------ --------------------------------------------------------------
+  Line   routes\auth.php
+ ------ --------------------------------------------------------------
+  :42    Cannot call method name() on array|Illuminate\Routing\Route.
+  :46    Cannot call method name() on array|Illuminate\Routing\Route.
+ ------ --------------------------------------------------------------
+
+ ------ ---------------------------
+  Line   routes\console.php
+ ------ ---------------------------
+  :18    Undefined variable: $this
+ ------ ---------------------------
+
+                                                                                                                        
+ [ERROR] Found 394 errors                                                                                               
+                                                                                                                        
+
+
+C:\Users\amadn\Downloads\Laravel-dayLaraApp-main 2\Laravel-dayLaraApp-main>
