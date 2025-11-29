@@ -1,0 +1,17 @@
+{
+  "resources/css/app.css": {
+    "file": "css/app-2bd68b60.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/css/codesnoutr.css": {
+    "file": "css/codesnoutr-c1d3f132.css",
+    "isEntry": true,
+    "src": "resources/css/codesnoutr.css"
+  },
+  "resources/js/app.js": {
+    "file": "js/app-70c6caff.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}

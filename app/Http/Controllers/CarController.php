@@ -59,4 +59,25 @@ class CarController extends Controller
     {
         return view('cars.show', compact('car'));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'image' => 'nullable|image|max:5120', // adjust rules
+        ]);
+
+        $car = new Car();
+        $car->name = $request->name;
+
+        // handle image
+        if ($request->hasFile('image')) {
+            // store on public disk and save only 'cars/filename.jpg'
+            $path = $request->file('image')->store('cars', 'public');
+            $car->image_path = $path;
+        }
+
+        $car->save();
+        return redirect()->route('admin.cars.index')->with('success', 'Car created');
+    }
 }

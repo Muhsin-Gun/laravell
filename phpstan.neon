@@ -1,0 +1,10 @@
+parameters:
+    level: max
+    paths:
+        - app
+        - database
+        - routes
+        - resources/views
+    excludePaths:
+        - %currentWorkingDirectory%/storage
+        - %currentWorkingDirectory%/bootstrap
