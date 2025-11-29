@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -54,7 +55,7 @@ class PaymentController extends Controller
 
         // Use the total price directly (already in KSH)
         $amount = (int) round($booking->total_price);
-        
+
         if ($amount < 1) {
             return response()->json([
                 'success' => false,
@@ -110,7 +111,7 @@ class PaymentController extends Controller
                     'amount' => $amount,
                     'status' => 'pending',
                     'result_code' => $result['ResponseCode'],
-                    'result_description' => $result['ResponseDescription']
+                    'result_description' => $result['ResponseDescription'] ?? ($result['responseDescription'] ?? null)
                 ]);
 
                 return response()->json([
@@ -124,7 +125,7 @@ class PaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $result['errorMessage'] ?? 'Payment request failed'
+                'message' => $result['errorMessage'] ?? $result['ResponseDescription'] ?? 'Payment request failed'
             ], 400);
 
         } catch (\Exception $e) {
@@ -146,38 +147,81 @@ class PaymentController extends Controller
         Log::info('M-Pesa Callback Received: ' . json_encode($data));
 
         try {
+            // Validate basic structure
+            if (!isset($data['Body']) || !isset($data['Body']['stkCallback'])) {
+                Log::error('Callback format invalid or missing stkCallback', ['payload' => $data]);
+                return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Invalid callback format']);
+            }
+
             $callbackData = $data['Body']['stkCallback'];
-            $resultCode = $callbackData['ResultCode'];
-            $checkoutRequestId = $callbackData['CheckoutRequestID'];
+            $resultCode = $callbackData['ResultCode'] ?? null;
+            $checkoutRequestId = $callbackData['CheckoutRequestID'] ?? null;
+
+            if (!$checkoutRequestId) {
+                Log::error('Callback missing CheckoutRequestID', ['callbackData' => $callbackData]);
+                return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Missing CheckoutRequestID']);
+            }
 
             // Find payment record
             $payment = Payment::where('checkout_request_id', $checkoutRequestId)->first();
 
             if (!$payment) {
-                Log::error('Payment not found for CheckoutRequestID: ' . $checkoutRequestId);
+                Log::error('Payment not found for CheckoutRequestID: ' . $checkoutRequestId, ['checkoutRequestId' => $checkoutRequestId]);
                 return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Payment not found']);
             }
 
-            if ($resultCode == 0) {
-                // Payment successful
+            if ((int)$resultCode === 0) {
+                // Payment successful - ensure metadata exists
+                if (!isset($callbackData['CallbackMetadata']) || !isset($callbackData['CallbackMetadata']['Item'])) {
+                    Log::error('CallbackMetadata missing for success', ['callbackData' => $callbackData]);
+                    // still update payment as completed? safer to mark missing metadata
+                    return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Missing metadata']);
+                }
+
                 $callbackMetadata = $callbackData['CallbackMetadata']['Item'];
 
-                // Extract payment details
+                // Extract payment details (case-insensitive)
                 $mpesaReceiptNumber = null;
                 $transactionDate = null;
                 $phoneNumber = null;
+                $amount = null;
 
                 foreach ($callbackMetadata as $item) {
-                    switch ($item['Name']) {
-                        case 'MpesaReceiptNumber':
-                            $mpesaReceiptNumber = $item['Value'];
+                    // support both 'Name' and 'name' casing, and Value/value
+                    $name = isset($item['Name']) ? $item['Name'] : ($item['name'] ?? null);
+                    $value = $item['Value'] ?? ($item['value'] ?? null);
+
+                    if (!$name) continue;
+
+                    switch (strtolower($name)) {
+                        case 'mpesareceiptnumber':
+                        case 'mpesareceiptnumber':
+                        case 'mpesareceiptnumber':
+                            $mpesaReceiptNumber = $value;
                             break;
-                        case 'TransactionDate':
-                            $transactionDate = $item['Value'];
+                        case 'transactiondate':
+                        case 'transactiondate':
+                            $transactionDate = $value;
                             break;
-                        case 'PhoneNumber':
-                            $phoneNumber = $item['Value'];
+                        case 'phonenumber':
+                        case 'phonenumber':
+                            $phoneNumber = $value;
                             break;
+                        case 'amount':
+                            $amount = $value;
+                            break;
+                    }
+                }
+
+                // Convert date safely. M-Pesa uses YmdHis format (e.g. 20251129163045)
+                $transactionDateCarbon = null;
+                if ($transactionDate) {
+                    try {
+                        // transactionDate might be integer — cast to string
+                        $transactionDateCarbon = Carbon::createFromFormat('YmdHis', (string)$transactionDate);
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to parse transaction date', ['transactionDate' => $transactionDate, 'error' => $e->getMessage()]);
+                        $transactionDateCarbon = null;
                     }
                 }
 
@@ -185,36 +229,51 @@ class PaymentController extends Controller
                 $payment->update([
                     'status' => 'completed',
                     'mpesa_receipt_number' => $mpesaReceiptNumber,
-                    'transaction_date' => $transactionDate ? now()->parse($transactionDate) : null,
+                    'transaction_date' => $transactionDateCarbon,
                     'result_code' => $resultCode,
-                    'result_description' => $callbackData['ResultDesc']
+                    'result_description' => $callbackData['ResultDesc'] ?? null,
+                    'amount' => $amount ?? $payment->amount
                 ]);
 
-                // Update booking status - auto-approve after successful payment
-                $payment->order->update([
-                    'status' => 'confirmed',
-                    'payment_status' => 'completed'
-                ]);
+                // Update booking status - only if relation exists
+                try {
+                    if (method_exists($payment, 'order') && $payment->order) {
+                        $payment->order->update([
+                            'status' => 'confirmed',
+                            'payment_status' => 'completed'
+                        ]);
+                    } elseif (method_exists($payment, 'booking') && $payment->booking) {
+                        // fallback if your relation is named booking
+                        $payment->booking->update([
+                            'status' => 'confirmed',
+                            'payment_status' => 'completed'
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Failed to update related booking/order', ['error' => $e->getMessage()]);
+                }
 
-                Log::info('Payment completed successfully: ' . $mpesaReceiptNumber);
+                Log::info('Payment completed successfully: ' . $mpesaReceiptNumber, ['checkoutRequestId' => $checkoutRequestId]);
+
             } else {
                 // Payment failed
                 $payment->update([
                     'status' => 'failed',
                     'result_code' => $resultCode,
-                    'result_description' => $callbackData['ResultDesc']
+                    'result_description' => $callbackData['ResultDesc'] ?? null
                 ]);
 
-                Log::warning('Payment failed: ' . $callbackData['ResultDesc']);
+                Log::warning('Payment failed: ' . ($callbackData['ResultDesc'] ?? 'No description'), ['checkoutRequestId' => $checkoutRequestId]);
             }
 
+            // Daraja expects a JSON response with ResultCode & ResultDesc
             return response()->json([
                 'ResultCode' => 0,
                 'ResultDesc' => 'Success'
             ]);
 
         } catch (\Exception $e) {
-            Log::error('M-Pesa Callback Exception: ' . $e->getMessage());
+            Log::error('M-Pesa Callback Exception: ' . $e->getMessage(), ['payload' => $data]);
             return response()->json([
                 'ResultCode' => 1,
                 'ResultDesc' => 'Error processing callback'
@@ -236,7 +295,7 @@ class PaymentController extends Controller
                 ->get($url);
 
             if ($response->successful()) {
-                return $response->json()['access_token'];
+                return $response->json()['access_token'] ?? null;
             }
 
             Log::error('M-Pesa Token Error: ' . $response->body());
@@ -255,7 +314,7 @@ class PaymentController extends Controller
     {
         $phone = $request->phone ?? '254793027220';
         $amount = $request->amount ?? 1;
-        
+
         // Get access token
         $token = $this->getAccessToken();
         if (!$token) {
@@ -293,7 +352,7 @@ class PaymentController extends Controller
                 ->post($url, $payload);
 
             $result = $response->json();
-            
+
             Log::info('Test STK Push Response: ' . json_encode($result));
 
             if ($response->successful() && isset($result['ResponseCode']) && $result['ResponseCode'] == '0') {
@@ -368,7 +427,7 @@ class PaymentController extends Controller
 
         // Format phone number to 254XXXXXXXXX
         $phone = $this->formatPhoneNumber($request->phone_number);
-        
+
         if (!$phone) {
             return back()->with('error', 'Invalid phone number format. Use 07XXXXXXXX or 254XXXXXXXXX');
         }
@@ -455,10 +514,10 @@ class PaymentController extends Controller
                     'amount' => $amount,
                     'status' => 'pending',
                     'result_code' => $result['ResponseCode'],
-                    'result_description' => $result['ResponseDescription']
+                    'result_description' => $result['ResponseDescription'] ?? null
                 ]);
 
-                return back()->with('success', 'Payment request sent to ' . $phone . '! Check your phone for the M-Pesa prompt.');
+                return back()->with('success', 'Payment request sent to ' . $phone . '! Check your phone for the M-Pesa prompt.' );
             }
 
             $errorMessage = $result['errorMessage'] ?? $result['ResponseDescription'] ?? 'Unknown error';
@@ -505,7 +564,7 @@ class PaymentController extends Controller
     {
         $phone = $request->phone ?? '254793027220';
         $amount = $request->amount ?? 1;
-        
+
         // Format phone number
         $phone = $this->formatPhoneNumber($phone);
         if (!$phone) {
@@ -518,7 +577,7 @@ class PaymentController extends Controller
         Log::info("API Test STK Push - Phone: {$phone}, Amount: {$amount}");
         Log::info("Callback URL: {$this->callback_url}");
         Log::info("Shortcode: {$this->shortcode}");
-        
+
         // Get access token
         $token = $this->getAccessToken();
         if (!$token) {
@@ -564,7 +623,7 @@ class PaymentController extends Controller
                 ->post($url, $payload);
 
             $result = $response->json();
-            
+
             Log::info('STK Push Response', ['status' => $response->status(), 'body' => $result]);
 
             if ($response->successful() && isset($result['ResponseCode']) && $result['ResponseCode'] == '0') {
