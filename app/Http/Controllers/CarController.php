@@ -11,20 +11,20 @@ class CarController extends Controller
     {
         $query = Car::query();
 
-        // Search filter (case-insensitive using ILIKE for PostgreSQL)
+        // Search filter (DB-agnostic, use LIKE which is case-insensitive on MySQL by default)
         if ($request->filled('search')) {
-            $search = strtolower($request->search);
+            $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->whereRaw('LOWER(name) LIKE ?', ['%' . $search . '%'])
-                  ->orWhereRaw('LOWER(brand) LIKE ?', ['%' . $search . '%'])
-                  ->orWhereRaw('LOWER(type) LIKE ?', ['%' . $search . '%'])
-                  ->orWhereRaw('LOWER(description) LIKE ?', ['%' . $search . '%']);
+                $q->where('name', 'LIKE', '%' . $search . '%')
+                  ->orWhere('brand', 'LIKE', '%' . $search . '%')
+                  ->orWhere('type', 'LIKE', '%' . $search . '%')
+                  ->orWhere('description', 'LIKE', '%' . $search . '%');
             });
         }
 
-        // Type filter (case-insensitive)
+        // Type filter (case-insensitive, use LIKE instead of LOWER for better MySQL support)
         if ($request->filled('type')) {
-            $query->whereRaw('LOWER(type) = ?', [strtolower($request->type)]);
+            $query->where('type', 'LIKE', $request->type);
         }
 
         // Price filter

@@ -1,4 +1,4 @@
-@extends('Admin.layout')
+@extends('layouts.dashboard')
 
 @section('content')
 <div style="max-width: 600px; margin: 60px auto;">

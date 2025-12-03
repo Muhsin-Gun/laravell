@@ -10,18 +10,8 @@ class EmployeeController extends Controller
 {
     public function approve(Request $request, Booking $booking)
     {
-        $request->validate([
-            'action' => 'required|in:approve,cancel,complete'
-        ]);
-
-        if ($request->action === 'approve') {
-            $booking->status = 'approved';
-        } elseif ($request->action === 'cancel') {
-            $booking->status = 'cancelled';
-        } elseif ($request->action === 'complete') {
-            $booking->status = 'completed';
-        }
-
+        // Approve a pending booking
+        $booking->status = 'approved';
         $booking->save();
 
         // Create notification for user
@@ -37,6 +27,28 @@ class EmployeeController extends Controller
             'updated_at' => now()
         ]);
 
-        return back()->with('success', 'Booking ' . $booking->status . ' successfully!');
+        return back()->with('success', 'Booking approved successfully!');
+    }
+
+    public function reject(Request $request, Booking $booking)
+    {
+        // Reject a pending booking
+        $booking->status = 'rejected';
+        $booking->save();
+
+        // Create notification for user
+        DB::table('notifications')->insert([
+            'user_id' => $booking->user_id,
+            'type' => 'booking.status',
+            'data' => json_encode([
+                'booking_id' => $booking->id,
+                'status' => $booking->status
+            ]),
+            'read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return back()->with('success', 'Booking rejected successfully!');
     }
 }

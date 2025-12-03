@@ -100,7 +100,16 @@ class ProfileController extends Controller
         $user->update($request->only('name', 'email'));
 
         if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('public/avatars');
+            // Validate file
+            $request->validate(['avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048']);
+
+            // Delete old avatar if exists
+            if ($user->avatar_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->avatar_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar_path);
+            }
+
+            // Store new avatar in public/avatars
+            $path = $request->file('avatar')->store('avatars', 'public');
             $user->avatar_path = $path;
             $user->save();
         }

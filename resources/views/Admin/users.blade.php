@@ -1,8 +1,7 @@
-@extends('admin.layout')
+@extends('layouts.dashboard')
 
 @section('title', 'Users')
 @section('page-title', 'User Management')
-.
 @section('content')
 <div class="p-6">
     <h1 class="text-2xl font-bold mb-4">User Management</h1>
@@ -29,27 +28,27 @@
                 <td class="py-3 px-6 text-left">{{ $user->email }}</td>
                 <td class="py-3 px-6 text-left capitalize">{{ $user->role }}</td>
                 <td class="py-3 px-6 text-center flex items-center justify-center space-x-3">
-                    
+
                     <!-- Add Blog -->
-                    <a href="{{ route('blogs.create') }}?user_id={{ $user->id }}" 
+                    <a href="{{ route('admin.blogs.create') }}?user_id={{ $user->id }}"
                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
                         Add Blog
                     </a>
 
                     <!-- Edit User -->
-                    <a href="{{ route('admin.users.edit', $user->id) }}" 
+                    <a href="{{ route('admin.users.edit', $user->id) }}"
                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">
                         Edit
                     </a>
 
                     <!-- Delete User -->
-                    <form action="{{ route('admin.users.destroy', $user->id) }}" 
-                          method="POST" 
-                          onsubmit="return confirm('Are you sure you want to delete this user?');" 
+                    <form action="{{ route('admin.users.destroy', $user->id) }}"
+                          method="POST"
+                          onsubmit="return confirm('Are you sure you want to delete this user?');"
                           class="inline-block">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" 
+                        <button type="submit"
                                 class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
                             Delete
                         </button>

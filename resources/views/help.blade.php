@@ -10,8 +10,8 @@
             If you have any questions or issues, please contact our support team:
         </p>
         <p style="color: #ccc; line-height: 1.8;">
-            📧 Email: <a href="mailto:support@carrental.com" style="color: #00e5ff;">support@carrental.com</a><br>
-            📞 Phone: <a href="tel:+1234567890" style="color: #00e5ff;">+1234567890</a><br>
+            📧 Email: <a href="mailto:muhsinabdi288@gmail.com" style="color: #00e5ff;">muhsinabdi288@gmail.com</a><br>
+            📞 Phone: <a href="tel:+254793027220" style="color: #00e5ff;">+254793027220</a><br>
             ⏰ Available: 24/7
         </p>
     </div>
